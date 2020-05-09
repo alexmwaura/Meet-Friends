@@ -31,12 +31,13 @@ exports.updatePost = (req, res) => {
     .get()
     .then((post) => {
       post.ref.update(postDetails);
-      return res.json({ message: "Post updated successfully" });
-    }) .catch((error) => {
+      return res.status(200).json({ message: "Post updated successfully" });
+    })
+    .catch((error) => {
       console.error(error);
-    });  
+      return res.status(500).json({ general: "Something went wrong" });
+    });
 };
-
 
 // get all posts function
 exports.getPosts = (req, res) => {
@@ -59,10 +60,56 @@ exports.getPosts = (req, res) => {
     })
     .catch((error) => {
       console.error(error);
+      return res.status(500).json({ general: "Something went wrong" });
     });
 };
 
-// exports.uploadImage = (req,res) => {
-//     const BusBoy = require("busboy")
-//     const path = require("path")
-// }
+// add post image
+exports.postImage = (req, res) => {
+  const BusBoy = require("busboy");
+  const path = require("path");
+  const os = require("os");
+  const fs = require("fs");
+
+  const busboy = new BusBoy({ headers: req.headers });
+
+  let postImageFile;
+  let postImageToBeUploaded = {};
+
+  busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+    const imageExtension = filename.split(".")[filename.split(".").length - 1];
+    postImageFile = `${Math.round(
+      Math.random() * 1000000000000
+    )}.${imageExtension}`;
+
+    const filePath = path.join(os.tmpdir(), postImageFile);
+    postImageToBeUploaded = { filePath, mimetype };
+    file.pipe(fs.createWriteStream(filePath));
+  });
+
+  busboy.on("finish", () => {
+    admin
+      .storage()
+      .bucket()
+      .upload(postImageToBeUploaded.filePath, {
+        resumable: false,
+        metadata: {
+          metadata: {
+            contentType: postImageToBeUploaded.mimetype,
+          },
+        },
+      })
+      .then(() => {
+        const postImageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${postImageFile}?alt=media`;
+        return db.doc(`/posts/${req.params.postId}`).update({ postImageUrl });
+      })
+      .then(() => {
+        return res.status(200).json({ message: "Image uploaded successfully" });
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ general: "Something went wrong" });
+      });
+  });
+  busboy.end(req.rawBody);
+};

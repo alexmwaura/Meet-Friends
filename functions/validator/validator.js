@@ -32,7 +32,6 @@ exports.postReducers = (data) => {
     if (data.website.trim().substring(0,4)){
 		postData.website = `http://${data.website.trim()}`
     }else postData.website = data.website
-
     return postData
 
 

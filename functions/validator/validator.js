@@ -56,11 +56,11 @@ exports.validateSignupData = (user) => {
 
 exports.validateLoginData = (data) => {
   let errors = {};
-if (isEmpty(data.email)) errors.email = 'Must not be Empty';
-if (isEmpty(data.password)) errors.password = 'Must not be Empty';
+  if (isEmpty(data.email)) errors.email = 'Must not be Empty';
+  if (isEmpty(data.password)) errors.password = 'Must not be Empty';
 
-return {
-      errors,
-      valid: Object.keys(errors).length  === 0 ? true:false
+  return {
+    errors,
+    valid: Object.keys(errors).length === 0 ? true : false
   }
 }

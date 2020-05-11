@@ -6,6 +6,7 @@ const { validatePostData, postReducers } = require("../validator/validator");
 // add post function
 exports.postQuote = (req, res) => {
   const postData = {
+    userId: req.user.userId,
     email: req.user.email,
     profileImage: req.user.profileImage,
     author: req.user.username,
@@ -13,7 +14,7 @@ exports.postQuote = (req, res) => {
     post: req.body.post,
     date: new Date().toISOString(),
     likeCount: 0,
-		commentCount: 0,
+    commentCount: 0,
   };
 
   const { valid, errors } = validatePostData(postData);
@@ -21,6 +22,8 @@ exports.postQuote = (req, res) => {
   if (!valid) return res.status(400).json(errors);
   db.collection("posts").add(postData)
     .then((data) => {
+      let id = data.id
+      data.update({ postId: id })
       return res.status(200).json({ success: "Post successfull" });
     })
     .catch((error) => {
@@ -34,12 +37,12 @@ exports.updatePost = (req, res) => {
 
   db.doc(`/posts/${req.params.postId}`).get()
     .then((post) => {
-      
+
       post.ref.update(postDetails);
       return res.status(200).json({ message: "Post updated successfully" });
     })
     .catch((error) => {
-      console.error(error);
+      // console.error(error);
       return res.status(500).json({ general: "Something went wrong" });
     });
 };
@@ -51,12 +54,7 @@ exports.getPosts = (req, res) => {
       const postData = [];
       posts.forEach((post) => {
         postData.push({
-          title: post.data().title,
-          post: post.data().post,
-          author: post.data().author,
-          background: post.data().background,
-          date: post.data().date,
-          id: post.id,
+          ...post.data()
         });
       });
       return res.status(200).json(postData);
@@ -115,92 +113,94 @@ exports.postImage = (req, res) => {
 };
 
 // comment on single Post
-exports.commentOnPost = (req,res)=> {
+exports.commentOnPost = (req, res) => {
   if (req.body.comment.trim() === '') return res.status(400).json({ comment: 'Must not be empty' });
 
-	const newComment = {
-		comment: req.body.comment,
-		createdAt: new Date().toISOString(),
-		postId: req.params.postId,
-		username: req.user.username,
-		profileImage: req.user.profileImage,
-	};
+  const newComment = {
+    comment: req.body.comment,
+    createdAt: new Date().toISOString(),
+    postId: req.params.postId,
+    username: req.user.username,
+    email: req.user.email,
+    userId: req.user.userId,
+    profileImage: req.user.profileImage
+  };
 
-	db.doc(`/posts/${req.params.postId}`)
-		.get()
-		.then((doc) => {
-			if (!doc.exists) {
-				return res.status(400).json({ error: 'Post not found' });
-			}
-			return doc.ref.update({commentCount: doc.data().commentCount + 1});
-		})
-		.then(() =>{
-			return db.collection('comments').add(newComment);
+  db.doc(`/posts/${req.params.postId}`)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        return res.status(400).json({ error: 'Post not found' });
+      }
+      return doc.ref.update({ commentCount: doc.data().commentCount + 1 });
+    })
+    .then(() => {
+      return db.collection('comments').add(newComment).then(comment => {
+        comment.update({ commentId: comment.id })
+      })
 
-		})
-		.then(() => {
-			res.json(newComment);
-		})
-		.catch((err) => {
-			console.log(err);
-			res.status(500).json({ error: 'Something went wrong' });
-		});}
+    })
+    .then(() => {
+      res.json(newComment);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: 'Something went wrong' });
+    });
+}
 
 // like single post
 exports.likePost = (req, res) => {
-    const likeDocument = db.collection('likes').where('username', '==', req.user.username)
-        .where('postId', '==', req.params.postId)
-        .limit(1);
-    
-    const postDocument = db.doc(`/posts/${req.params.postId}`);
-    let postData = {};
-    postDocument.get()
-      .then(doc => {
-        if (doc.exists) {
-          postData = doc.data();
-          postData.postId = doc.id;
-          return likeDocument.get();
-        } 
-        return res.status(404).json({ error: 'Post not found' });
-        
-      })
-      .then(data => {
-        if (data.empty) {
-          return db .collection('likes')
-            .add({
-              postId: req.params.postId,
-              username: req.user.username,
-            })
-            .then(() => {
-              postData.likeCount++
-              return postDocument.update({likeCount: postData.likeCount });
-            })
-            .then(() => {return res.json(postData)})
-        } 
-        return res.status(400).json({ error: 'Post already liked' });
-        
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).json({ error: err.code });
-    });
-};
-  
-exports.unlikePost = (req, res) => {
-
-  const likeDocument = db.collection('likes')
-    .where('username', '==', req.user.username)
-    .where('postId', '==', req.params.postId)
-    .limit(1);
-
+  const likeDocument = db.collection('likes').where('email', '==', req.user.email).where('postId', '==', req.params.postId).limit(1);
   const postDocument = db.doc(`/posts/${req.params.postId}`);
   let postData = {};
-  postDocument
-    .get()
-    .then((doc) => {
+  postDocument.get().then(doc => {
+    if (doc.exists) {
+      postData = doc.data();
+      postData.postId = doc.id;
+      if (doc.data().email === req.user.email) return res.json({ error: "Can not like own post" })
+      return likeDocument.get()
+        .then(data => {
+
+          if (data.empty) {
+            return db.collection('likes')
+              .add({
+                postId: req.params.postId,
+                email: req.user.email,
+                username: req.user.username,
+                userId: req.user.userId
+              }).then(like => { like.update({ likeId: like.id }) })
+              .then(() => {
+                postData.likeCount++
+                return postDocument.update({ likeCount: postData.likeCount });
+              })
+              .then(() => { return res.json(postData) })
+          }
+          return res.status(400).json({ error: 'Post already liked' })
+
+        }).catch((err) => {
+          console.error(err);
+          res.status(500).json({ error: err.code });
+        });
+    }
+    return res.status(404).json({ error: 'Post not found' });
+
+  })
+
+    .catch((err) => { console.error(err); res.status(500).json({ error: err.code }); });
+};
+
+
+// unlike post
+exports.unlikePost = (req, res) => {
+  const likeDocument = db.collection('likes').where('email', '==', req.user.email).where('postId', '==', req.params.postId).limit(1);
+  const postDocument = db.doc(`/posts/${req.params.postId}`);
+  let postData = {};
+  postDocument.get().then((doc) => {
       if (doc.exists) {
         postData = doc.data();
         postData.postId = doc.id;
+        console.log(postData)
         return likeDocument.get();
       } else {
         return res.status(404).json({ error: 'Post not found' });
@@ -226,19 +226,36 @@ exports.unlikePost = (req, res) => {
       res.status(500).json({ error: err.code });
     });
 };
-    
-exports.deletePost = (req,res) => {
-  const document =  db.doc(`/posts/${req.params.postId}`);
-  document.get()
-  .then(doc=> {
-    if(!doc.exists){return res.status(404).json({ error: 'Post not found' })}
-    console.log(req.user)
-    if(doc.data().email !== req.user.email){return res.status(403).json({ error: 'Unauthorized' })}
-    else {return document.delete()}   
-  })
-  .then(() => { res.json({message: "Post deleted successfully"})})
-  .catch(err => {
+
+// delete comment
+exports.deleteComment = (req, res) => {
+  const postDocument = db.doc(`/posts/${req.params.postId}`);
+  db.doc(`/comments/${req.params.commentId}`).delete().then(() => {
+    postDocument.get().then(post => {
+      let postData = post.data()
+      postData.commentCount--;
+      postDocument.update({ commentCount: postData.commentCount })
+    })
+    return res.json({ success: "Successfully deleted" })
+  }).catch((err) => {
     console.error(err);
-    return res.status(500).json({error: err.code})
-  })
+    res.status(500).json({ error: err.code });
+  });
+}
+
+// delete post
+exports.deletePost = (req, res) => {
+  const document = db.doc(`/posts/${req.params.postId}`);
+  document.get()
+    .then(doc => {
+      if (!doc.exists) { return res.status(404).json({ error: 'Post not found' }) }
+      console.log(req.user)
+      if (doc.data().email !== req.user.email) { return res.status(403).json({ error: 'Unauthorized' }) }
+      else { return document.delete() }
+    })
+    .then(() => { res.json({ message: "Post deleted successfully" }) })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ error: err.code })
+    })
 }    

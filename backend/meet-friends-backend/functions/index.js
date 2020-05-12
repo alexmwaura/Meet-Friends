@@ -19,7 +19,7 @@ app.post("/unlike/:postId",AuthMiddleware,unlikePost)
 app.delete("/post/delete/:postId",AuthMiddleware,deletePost)
 app.post("/comment/delete/:postId/:commentId",AuthMiddleware,deleteComment)
 app.get("/all/posts", getPosts)
-app.get("/google", googleSignup)
+app.post("/google/:userId", googleSignup)
 
 
 

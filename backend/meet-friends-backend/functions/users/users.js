@@ -18,21 +18,7 @@ const { validateLoginData, validateSignupData } = require("../validator/validato
 
 
 
-exports.googleSignup =(req,res) => {
-    let provider = new firebase.auth.GoogleAuthProvider()
-    return firebase.auth().signInWithRedirect(provider).then(()=> {
-        return firebase.auth().getRedirectResult().then(result=> {
-            console.log(result.credential)
-        }).catch((error) => {
-            console.error(error)
-            return res.status(403).json({ general: 'Wrong credentials please try again' });
-        });
-    }).catch((error) => {
-        console.error(error)
-        return res.status(403).json({ general: 'Wrong credentials please try again' });
-    });
-    
-}
+
 
 
 exports.signUp = (req, res) => {
@@ -77,6 +63,43 @@ exports.signUp = (req, res) => {
 
 }
 
+
+exports.googleSignup =(req,res) => {
+    const defaultProfileImage = "profile.png"
+    const defaultCoverImage = "download.png"
+    const userData = {
+        email: req.body.email,
+        username: req.body.username,
+        profileImage: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${defaultProfileImage}?alt=media`,
+        coverImage: `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${defaultCoverImage}?alt=media`,
+        userId: req.params.userId
+    }
+    const{email} = userData
+
+    db.doc(`/users/${email}`).get().then(user => {
+
+        if(user.exists){
+            console.log("success log")
+            return res.json({success: "Loged in successfully"})
+        }
+        else{
+            return db.doc(`/users/${email}`).set(userData).then(()=> {
+                console.log({success: "Signup successfull"})
+                return res.json({success: "Signup successfull"})
+            })
+            .catch((error) => {
+                console.error(error)
+                return res.status(403).json({ general: 'Something went wrong' });
+            });
+          
+        }
+    }).catch((error) => {
+        console.error(error)
+        return res.status(403).json({ general: 'Something went wrong' });
+    });
+    
+}
+
 exports.login = (req, res) => {
     const user = {
         email: req.body.email,
@@ -103,6 +126,10 @@ exports.getUserDetails = (req,res) => {
         })
         return res.json(notificationList)
     })
+    .catch((error) => {
+        console.error(error)
+        return res.status(403).json({ general: 'Something went wrong' });
+    });
 }
 
 exports.getNotification = (req,res)=> {

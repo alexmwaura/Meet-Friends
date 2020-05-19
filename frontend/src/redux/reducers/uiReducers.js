@@ -1,11 +1,11 @@
 import {SET_ERRORS,CLEAR_ERRORS,LOADING_UI,STOP_LOADING_UI} from "../store/types"
 
-const initialState = {
+const initialUi = {
     loading: false,
     errors: null
 }
 
-export default function(state=initialState,action){
+export default function(state=initialUi,action)  {
     switch(action.type){
         case SET_ERRORS: return {...state, loading:false,errors: action.payload}
         case CLEAR_ERRORS: return {...state, loading:false,errors: null}

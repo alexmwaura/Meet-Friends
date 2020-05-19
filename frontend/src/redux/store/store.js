@@ -1,14 +1,19 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import userReducer from '../reducers/userReducers';
+
+import {userReducer,currentChannelReducer} from '../reducers/reducers';
 import uiReducer from '../reducers/uiReducers';
 
 const initialState = {};
+
 const middleware = [thunk];
+
 const reducers = combineReducers({
   user: userReducer,
+  channel: currentChannelReducer,
   UI: uiReducer
 });
+
 
 const composeEnhancers =
   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__

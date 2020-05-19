@@ -1,26 +1,28 @@
-import React, { Component } from 'react'
-import landingPage from './components/landingPage/landingPage'
+import React from 'react'
+import LandingPage from './components/landingPage/landingPage'
 import './App.css';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import login from './pages/login/login'
-import {Provider} from "react-redux"
-import store from "./redux/store/store"
+import {Grid }from "semantic-ui-react"
+import { connect } from "react-redux"
 
-class App extends Component {
-  render() {
+const App =({user,currentChannel})=> {
     return (
-      <div>
-       <Provider store={store}>
-       <Router>
-          <Switch>
-            <Route exact path="/login" component={login} />
-            <Route exact path="/" component={landingPage} />
-          </Switch>
-        </Router>
-       </Provider>
-      </div>
+      <Grid container>
+        <Grid.Column>
+       <LandingPage
+       user={user}
+       currentChannel={currentChannel}
+       />
+          </Grid.Column> 
+      </Grid>
+
     )
-  }
+  
 }
 
-export default App
+const mapStateToProps = (state) => ({
+  UI: state.UI,
+  user: state.user.currentUser,
+  currentChannel: state.channel.currentChannel
+})
+
+export default connect(mapStateToProps)(App)

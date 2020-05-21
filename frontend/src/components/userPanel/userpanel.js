@@ -10,13 +10,13 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 class userpanel extends Component {
     state = {
-        user: this.props.authenticatedUser
+        user: this.props.currentUser
     }
     
     dropDownOptions = () => [
         { key:"user",text: <span >Signed as <strong>
             
-    {this.state.user ?(<Fragment>{this.state.user.username.toLowerCase()}</Fragment>):(<Fragment/>)}
+    {this.state.user ?(<Fragment>{this.state.user.displayName.toLowerCase()}</Fragment>):(<Fragment/>)}
             
             </strong></span>,disabled: true},
         {key: "avatar",text: <span>Change Avatar</span> },
@@ -33,6 +33,7 @@ class userpanel extends Component {
     render() {
     
         const {user}= this.state
+        // console.log(user)
         
         return (
             <Grid >
@@ -51,9 +52,9 @@ class userpanel extends Component {
                                <Fragment>
                                 {user ? (
                                 <span>
-                                <Image src={user.profileImage} spaced="right" avatar />
+                                <Image src={user.photoURL} spaced="right" avatar />
 
-                                {user.username}
+                                {user.displayName}
                                 </span> 
                                 ):(
                                     <CircularProgress size={20} disableShrink />

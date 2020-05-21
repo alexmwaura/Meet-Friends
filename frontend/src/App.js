@@ -4,13 +4,14 @@ import './App.css';
 import {Grid }from "semantic-ui-react"
 import { connect } from "react-redux"
 
-const App =({user,currentChannel})=> {
+const App =({currentChannel,authenticatedUser,isPrivateChannel})=> {
     return (
       <Grid container>
         <Grid.Column>
        <LandingPage
-       user={user}
+       authenticatedUser={authenticatedUser}
        currentChannel={currentChannel}
+       isPrivateChannel={isPrivateChannel}
        />
           </Grid.Column> 
       </Grid>
@@ -21,8 +22,9 @@ const App =({user,currentChannel})=> {
 
 const mapStateToProps = (state) => ({
   UI: state.UI,
-  user: state.user.currentUser,
-  currentChannel: state.channel.currentChannel
+  authenticatedUser: state.user.authenticatedUser,
+  currentChannel: state.channel.currentChannel,
+  isPrivateChannel: state.channel.isPrivateChannel,
 })
 
 export default connect(mapStateToProps)(App)

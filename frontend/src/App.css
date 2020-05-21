@@ -7,7 +7,7 @@ html,body,
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --scrollbarBG: #eee;
-  --thumbBG2: #004d40;
+  --thumbBG2: #044238;
   --thumbBG: #b1d6ee;
    height: 100vh;
   background: #eee;
@@ -38,126 +38,30 @@ html::-webkit-scrollbar-corner {
   background-color: var(--scrollbarBG);
 }
 
-.login{
-  margin: 100px 10px auto 100px;
-  position: relative;
-  align-items: center;
-  float: inline-end;
 
-}
 
-form{
-  text-align: center;
-  align-items: center;
-}
-.google-button {
-  height: 40px;
-  border-width: 0;
-  background: white;
-  color: #737373;
-  border-radius: 5px;
-  white-space: nowrap;
-  box-shadow: 1px 1px 0px 1px rgba(0,0,0,0.05);
-  transition-property: background-color, box-shadow;
-  transition-duration: 150ms;
-  transition-timing-function: ease-in-out;
-  padding: 0;
- cursor: pointer;
 
+.messages::-webkit-scrollbar {
+  width: 11px;
 }
-
-.google-button:hover{
-  box-shadow: 1px 4px 5px 1px rgba(2, 0, 0, 0.1);
-  background-color: #795548;
-  color: #fff;
+.messages {
+  height: 58vh;
+  overflow-y: auto;
+  /* direction: ltr; */
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG2) var(--scrollbarBG);
 }
-.google-button:active{
-  background-color: #e5e5e5;
-  box-shadow: none;
-  transition-duration: 10ms;
+.messages::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
 }
-    
-.google-button__icon {
-  display: inline-block;
-  vertical-align: middle;
-  margin: 8px 0 8px 8px;
-  width: 18px;
-  height: 18px;
-  box-sizing: border-box;
+.messages::-webkit-scrollbar-thumb {
+  background-color: var(--thumbBG2);
+  border-radius: 6px;
+  border: 3px solid var(--scrollbarBG);
 }
-
-.google-button__icon--plus {
-  width: 27px;
+.messages::-webkit-scrollbar-corner {
+  background-color: var(--scrollbarBG);
 }
-
-.google-button__text {
-  display: inline-block;
-  vertical-align: middle;
-  padding: 0 24px;
-  font-size: 14px;
-  font-weight: bold;
-  font-family: 'Roboto',arial,sans-serif;
-}
-.button__text {
-  display: inline-block;
-  vertical-align: middle;
-  padding: 0 24px;
-  font-size: 14px;
-  font-weight: bold;
-  font-family: 'Roboto',arial,sans-serif;
-}
-
-button {
-  margin-right: 10px;
- 
-}
-.button{
-  
-  border-width: 0;
-  background: white;
-  color: #737373;
-  border-radius: 50px;
-  white-space: nowrap;
-  box-shadow: 1px 1px 0px 1px #607d8b;
-  transition-property: background-color, box-shadow;
-  transition-duration: 150ms;
-  transition-timing-function: ease-in-out;
-  padding: 0;
- cursor: pointer;
-}
-.add{
-  cursor: pointer;
-  border-radius: 5px;
-  white-space: nowrap;
-  text-shadow:0px 0px 10px  #98bed1;
-  transition-property: background-color, box-shadow;
-  transition-duration: 150ms;
-  transition-timing-function: ease-in-out;
-  padding: 0;
-}
-
-button:focus{
-  outline: none;
-}
-
-.menu_item{
-  /* box-shadow: 0px 1px 0px 1px rgba(0,0,0,0.05); */
-  text-shadow:0 10px 7px  black;
-}
-.menu_item2{
-  /* box-shadow: 0px 1px 0px 1px rgba(0,0,0,0.05); */
-  text-shadow:0px 1px 10px  #272d30;
-}
-
-.dropdown{
-cursor: pointer;
-}
-
-.messages{
-  height: 440px;
-  overflow-y: scroll;
-}
-
 .message__form{
   position: fixed !important;
   bottom: 1em;
@@ -165,4 +69,22 @@ cursor: pointer;
   left: 0;
   right: 1em;
   z-index: 200;
+}
+.message__self{
+ 
+  padding-left: 20em;
+  
+}
+.message__selfTwo{
+  /* text-align: right; */
+  /* float: right; */
+  /* border-left: 2px solid orange; */
+  padding-left: 15px;
+}
+.comment{
+  padding-bottom: 200px;
+}
+.message__image{
+  padding: 1em;
+  height: 220px;
 }

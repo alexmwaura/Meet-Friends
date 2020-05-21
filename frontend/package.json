@@ -11,13 +11,23 @@
     "axios": "^0.19.2",
     "firebase": "^7.14.3",
     "firebase-admin": "^8.12.1",
+    "http2": "^3.3.7",
+    "jwt-decode": "^2.2.0",
+    "mime-types": "^2.1.27",
+    "moment": "^2.25.3",
     "react": "^16.13.1",
+    "react-avatar-editor": "^11.0.9",
     "react-dom": "^16.13.1",
+    "react-google-login": "^5.1.19",
+    "react-google-material-icons": "^1.0.4",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.88.2",
+    "uuid": "^8.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -40,5 +50,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5001/portfolio-alex-eb3ef/us-central1/api"
+  "proxy": "https://europe-west1-portfolio-alex-eb3ef.cloudfunctions.net/api"
 }

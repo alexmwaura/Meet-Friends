@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { BrowserRouter as Router, Route, Switch, withRouter } from "react-router-dom";
-import login from './pages/login/login'
+import Login from './pages/login/login'
+import Signup from './pages/signup/signup'
+
 import {Provider,connect} from "react-redux"
 import store from "./redux/store/store"
 import firebase from "./Auth/firebase"
@@ -10,14 +12,14 @@ import * as serviceWorker from './serviceWorker';
 import {  SET_UNAUTHENTICATED, STOP_LOADING_UI } from './redux/store/types';
 import axios from "axios"
 import jwt_decode from "jwt-decode"
-import {setAuthenticatedUser,getCurrentUser} from './redux/actions/actions'
+import {setAuthenticatedUser} from './redux/actions/actions'
+
 
 class Root extends Component {
 
   setToken(token,email,user){
     if(token){
       axios.defaults.headers.common["Authorization"] = token
-      this.props.getCurrentUser(email)
       this.props.setAuthenticatedUser(user)
     }
   }
@@ -31,12 +33,17 @@ class Root extends Component {
         store.dispatch({type:STOP_LOADING_UI})
         this.props.history.push("/")
         
+        
        if(jwt_decode(xa)['exp'] * 1000 < Date.now()){ 
          store.dispatch({type: SET_UNAUTHENTICATED})
          this.props.history.push("/login") 
         }
       }
-      else{this.props.history.push( '/login')}
+      else{
+        this.props.history.push('/login') 
+
+      }
+            
       
     })
 
@@ -45,8 +52,10 @@ class Root extends Component {
   render(){
     return(
          <Switch>
-           <Route exact path="/login" component={login} />
-           <Route exact path="/" component={App} />
+            <Route exact path="/" component={App} />
+            <Route  path="/login" component={Login} />
+            <Route  path="/signup" component={Signup} />
+          
          </Switch>
       
       
@@ -59,7 +68,7 @@ const mapStateFromProps = state => ({
 });
 
 
-const RootWithAuth = withRouter(connect(mapStateFromProps, {setAuthenticatedUser,getCurrentUser})(Root))
+const RootWithAuth = withRouter(connect(mapStateFromProps, {setAuthenticatedUser})(Root))
 
 
 ReactDOM.render(

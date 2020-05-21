@@ -1,15 +1,18 @@
-import React from "react";
+import React,{Fragment} from "react";
 import { Loader, Dimmer } from "semantic-ui-react";
 import {connect} from "react-redux"
 
-const Spinner = (props) => {
+const Spinner = ({user,messages}) => {
  
 
- const {user: {authenticated},} = props
+ const {authenticated} = user
   return (
     <Dimmer active>
      {authenticated? (
-        <Loader size="huge" content="Preparing Chat..." />
+
+        <Fragment>
+          {messages.length > 0 ? <Loader size="huge" content="Preparing Chat..." />:<h1 className="animated pulse">Add message</h1>}
+        </Fragment>
      ):(
       <Loader size="huge" content="Please Wait login in..." />
      )}

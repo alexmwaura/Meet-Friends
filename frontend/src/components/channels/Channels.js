@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { Menu, Icon, Modal, Form, Input, Button } from "semantic-ui-react"
 import firebase from "../../Auth/firebase"
 import { Loader, Dimmer } from "semantic-ui-react";
-import {setCurrentChannel} from "../../redux/actions/actions"
+import {setCurrentChannel,setPrivateChannel} from "../../redux/actions/actions"
 import {connect} from "react-redux"
 
 
@@ -15,7 +15,8 @@ class Channels extends Component {
         modal: false,
         channelsRef: firebase.database().ref('channels'),
         firstLoad: true ,
-        activeChannel:''
+        activeChannel:'',
+        loading: true
 
     }
 
@@ -47,8 +48,7 @@ class Channels extends Component {
         this.setState({firstLoad: false})   
     }
     setActiveChannel = channel => {
-        console.log(channel)
-        this.setState({activeChannel: channel.id})
+        this.setState({activeChannel: channel.id,loading: false})
     }
 
     addChannel = () => {
@@ -81,7 +81,7 @@ class Channels extends Component {
             key={channel.id}
             onClick={() => this.changeChannel(channel)}
             name={channel.name}
-            style={{opacity: 0.8,textAlign:'center'}}
+            style={{opacity: 0.8,textAlign:'left'}}
             active={channel.id === this.state.activeChannel}
             >
                 # {channel.name}
@@ -100,6 +100,8 @@ class Channels extends Component {
     changeChannel = channel => {
         this.setActiveChannel(channel)
         this.props.setCurrentChannel(channel)
+        this.props.setPrivateChannel(false)
+
     }
 
 
@@ -107,8 +109,8 @@ class Channels extends Component {
         const { modal, channels } = this.state
         return (
             <Fragment>
-                <Menu.Menu style={{ paddingBottom: "2em" }} className="menu_item2">
-                    <Menu.Item style={{textAlign:'center'}}>
+                <Menu.Menu className="menu_item2">
+                    <Menu.Item style={{textAlign:'left'}}>
                         <span><Icon name="exchange" /> CHANNELS </span> {" "}
                ({channels.length}) <Icon name="add" className="add" onClick={this.openModal} />
 
@@ -158,4 +160,4 @@ class Channels extends Component {
 
 
 
-export default connect(null,{setCurrentChannel})(Channels)
+export default connect(null,{setCurrentChannel,setPrivateChannel})(Channels)

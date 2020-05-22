@@ -1,13 +1,20 @@
 const functions = require("firebase-functions")
+const cors = require("cors")
 const app = require("express")()
-const {postQuote,getPosts,updatePost,postImage,commentOnPost,deletePost,likePost,unlikePost,deleteComment} = require("./posts/posts")
-const {signUp,login,getNotification,googleSignup} = require("./users/users")
-const AuthMiddleware = require("./middleware/Auth")
 const {db} = require("./util/admin")
+app.use(cors({origin: true}))
 
+
+
+const {postQuote,getPosts,updatePost,postImage,commentOnPost,deletePost,likePost,unlikePost,deleteComment} = require("./posts/posts")
+const {signUp,login,getNotification,googleSignup,getCurrentUser} = require("./users/users")
+const AuthMiddleware = require("./middleware/Auth")
+
+const {addChannel} = require("./channels/channels")
 // authentication routes
 app.post("/signup",signUp)
 app.post("/login",login)
+app.get("/user/:userEmail",AuthMiddleware,getCurrentUser)
 
 // posts routes
 app.post("/post", AuthMiddleware,postQuote)
@@ -21,13 +28,16 @@ app.post("/comment/delete/:postId/:commentId",AuthMiddleware,deleteComment)
 app.get("/all/posts", getPosts)
 app.post("/google/:userId", googleSignup)
 
+//channels routes
+
+app.post("/add/channel", AuthMiddleware, addChannel)
 
 
-exports.api = functions.region("us-central1").https.onRequest(app)
+exports.api = functions.region("europe-west1").https.onRequest(app)
 
 
 // create notification on comment
-exports.createNotificationOnComment = functions.region('us-central1').firestore.document('comments/{id}').onCreate((snap)=> {
+exports.createNotificationOnComment = functions.region('europe-west1').firestore.document('comments/{id}').onCreate((snap)=> {
 	const {postId} = snap.data()
 	return	db.doc(`/posts/${postId}`).get().then(post=>{
 		if(post.exists && post.data.userId !== snap.data().userId ){
@@ -46,7 +56,7 @@ exports.createNotificationOnComment = functions.region('us-central1').firestore.
 })
 
 // create notification on like
-exports.createNotifactionOnlike = functions.region('us-central1').firestore.document('likes/{id}').onCreate((snap)=> {
+exports.createNotifactionOnlike = functions.region('europe-west1').firestore.document('likes/{id}').onCreate((snap)=> {
 	const {postId} = snap.data()
 	return	db.doc(`/posts/${postId}`).get().then(post=>{
 		if(post.exists && post.data.userId !== snap.data().userId ){
@@ -67,17 +77,17 @@ exports.createNotifactionOnlike = functions.region('us-central1').firestore.docu
 })
 
 // delete notification on unlike
-exports.deleteNotificationOnUnlike = functions.region('us-central1').firestore.document('likes/{id}').onDelete((snapshot) => {
+exports.deleteNotificationOnUnlike = functions.region('europe-west1').firestore.document('likes/{id}').onDelete((snapshot) => {
 		return db.doc(`/notifications/${snapshot.id}`).delete().then(() => {}).catch((error) => {console.error(error);	});
 });    
 
 // delete notification on comment delete
-exports.deleteNotificationOnComment = functions.region('us-central1').firestore.document('comments/{id}').onDelete((snapshot) => {
+exports.deleteNotificationOnComment = functions.region('europe-west1').firestore.document('comments/{id}').onDelete((snapshot) => {
 		return db.doc(`/notifications/${snapshot.id}`).delete().then(() => {}).catch((error) => {console.error(error);	});
 });  	
 
 // detect changes on post image
-exports.onPostImageChange = functions.region('us-central1').firestore.document('/posts/{postId}').onUpdate((change) => {
+exports.onPostImageChange = functions.region('europe-west1').firestore.document('/posts/{postId}').onUpdate((change) => {
 
     if (change.before.data().postImageUrl !== change.after.data().postImageUrl) {
     	console.log('Image has changed')    
@@ -98,7 +108,7 @@ exports.onPostImageChange = functions.region('us-central1').firestore.document('
 });
 
 // detect changes on cover image
-exports.onCoverImageChange = functions.region('us-central1').firestore.document('/users/{userId}').onUpdate((change) => {
+exports.onCoverImageChange = functions.region('europe-west1').firestore.document('/users/{userId}').onUpdate((change) => {
 
     if (change.before.data().coverImage !== change.after.data().coverImage) {
     	console.log('Image has changed')    
@@ -118,7 +128,7 @@ exports.onCoverImageChange = functions.region('us-central1').firestore.document(
 });
 
 // detect changes on profile image change
-exports.onProfileImageChange = functions.region('us-central1').firestore.document('/users/{userId}').onUpdate((change) => {
+exports.onProfileImageChange = functions.region('europe-west1').firestore.document('/users/{userId}').onUpdate((change) => {
 
     if (change.before.data().profileImage !== change.after.data().profileImage) {
     	console.log('Image has changed')    
@@ -138,7 +148,7 @@ exports.onProfileImageChange = functions.region('us-central1').firestore.documen
 });
    
 // detect changes on post delete
-exports.onPostDelete = functions.region('us-central1').firestore.document('/posts/{postId}').onDelete((snapshot, context) => {
+exports.onPostDelete = functions.region('europe-west1').firestore.document('/posts/{postId}').onDelete((snapshot, context) => {
     const postId = context.params.postId;
     const batch = db.batch()
     return db.collection('comments').where('postId', '==', postId).get()

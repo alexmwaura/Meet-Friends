@@ -18,7 +18,7 @@ class messageHeader extends Component {
         <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }}>
           <span>
             {userPhoto ?  <Image src={userPhoto} spaced="right" style={{height: '2em'}} avatar />:""}
-            {channelName}
+            {(channelName).toLowerCase()}
            {!privateChannel &&  <Icon name={"star outline"} color="black" /> }
           </span>
           <Header.Subheader>

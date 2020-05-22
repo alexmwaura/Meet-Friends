@@ -17,6 +17,7 @@ class messageForm extends Component {
     channel: this.props.currentChannel,
     user: this.props.currentUser,
     messagesRef: this.props.messagesRef,
+    privateChannel: this.props.privateChannel,
     errors: [],
     modal: false,
     percentUploaded: 0,
@@ -47,10 +48,18 @@ class messageForm extends Component {
     return message;
   };
 
+  getPath = () => {
+    if(this.state.privateChannel){
+      return `chat/private-${this.state.channel.id}`
+    }else{
+      return 'chat/public'
+    }
+  } 
+
   uploadFile = (file, metadata) => {
     const pathToUpload = this.state.channel.id;
-    const ref = this.props.messagesRef;
-    const filePath = `chat/public/${uuidv4()}.jpeg`;
+    const ref = this.props.getMessagesRef();
+    const filePath = `${this.getPath()}${uuidv4()}.jpeg`;
 
     this.setState(
       {
@@ -95,10 +104,11 @@ class messageForm extends Component {
   };
 
   sendMessage = () => {
-    const { message, channel, messagesRef } = this.state;
+    const { message, channel } = this.state;
+    const {getMessagesRef} = this.props
     if (message) {
       this.setState({ loading: true });
-      messagesRef
+      getMessagesRef()
         .child(channel.id)
         .push()
         .set(this.createMessage())

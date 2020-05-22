@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 
 class directMessages extends Component {
   state = {
+    activeChannel: '',
     user: this.props.user,
     users: [],
     userRef: firebase.database().ref("users"),
@@ -17,13 +18,14 @@ class directMessages extends Component {
     if (this.state.user) {
       this.addListeners(this.state.user.uid);
     }
+    // console.log(this.state.connectedRef)
   }
   addListeners = (currentUserUid) => {
     const { userRef, connectedRef, presenceRef } = this.state;
     let loadedUsers = [];
     userRef.on("child_added", (snap) => {
       let user = snap.val();
-      // user["uid"] = snap.key;
+      user["uid"] = snap.key;
       user["status"] = "offline";
       if (this.state.user && this.state.user.uid !== user["userId"]) {
         loadedUsers.push(user);
@@ -85,14 +87,16 @@ class directMessages extends Component {
     };
     this.props.setCurrentChannel(channelData);
     this.props.setPrivateChannel(true)
+    this.setActiveChannel(user.userId)
   };
 
+  setActiveChannel = (userId) => this.setState({activeChannel: userId})
+
   render() {
-    const { users } = this.state;
-    // console.log(users);
+    const { users,activeChannel } = this.state;
 
     return (
-      <Menu.Menu className="menu">
+      <Menu.Menu className="menu_item_direct">
         <Menu.Item>
           <span>
             <Icon name="mail" />
@@ -100,13 +104,13 @@ class directMessages extends Component {
           </span>{" "}
           ({users.length})
         </Menu.Item>
-        <Menu.Item>
+      
           {users.map((user) => (
             <Menu.Item
               key={user.userId}
-              // active={user.uid === activeChannel}
+              active={user.userId === activeChannel}
               onClick={() => this.changeChannel(user)}
-              style={{ opacity: 0.7, fontStyle: "italic" }}
+              style={{ opacity: 0.8, fontStyle: "italic",textAlign:'left' }}
             >
               <Icon
                 name="circle"
@@ -116,10 +120,10 @@ class directMessages extends Component {
                 {" "}
                 <Image src={user.profileImage} spaced="right" avatar />
               </span>
-              {user.username}
+              {(user.username).toLowerCase()}
             </Menu.Item>
           ))}
-        </Menu.Item>
+       
       </Menu.Menu>
     );
   }

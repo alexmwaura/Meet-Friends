@@ -12,7 +12,7 @@ import DirectMessages from "../directMessages/directMessages"
 
            
         
-            <Menu size="large" inverted fixed="left" vertical style={{background: '#607d8b', fontSize: '1.2rem'}}>
+            <Menu  fixed="left" inverted vertical style={{background: '#607d8b', fontSize: '1.2rem'}} >
                 
             <UserPanel currentUser={this.props.authenticatedUser} />
             <br/>

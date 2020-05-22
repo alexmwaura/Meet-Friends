@@ -21,7 +21,9 @@ class Channels extends Component {
     }
 
     componentDidMount() {this.addListeners()}
+
     UNSAFE_componentWillMount(){this.removeListeners()}
+
     removeListeners = () => {this.state.channelsRef.off() }
 
     closeModal = () => { this.setState({ modal: false }) }
@@ -90,6 +92,7 @@ class Channels extends Component {
     )
 
     handleSubmit = (event) => {
+        event.preventDefault()
         if (this.isformValid(this.state)) {
             this.addChannel()
         }

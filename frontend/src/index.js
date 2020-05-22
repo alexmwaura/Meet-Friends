@@ -14,6 +14,7 @@ import axios from "axios"
 import jwt_decode from "jwt-decode"
 import {setAuthenticatedUser} from './redux/actions/actions'
 
+axios.defaults.baseURL = 'https://europe-west1-portfolio-alex-eb3ef.cloudfunctions.net/api'
 
 class Root extends Component {
 

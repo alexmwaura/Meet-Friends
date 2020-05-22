@@ -8,7 +8,7 @@ const Spinner = ({user,messages}) => {
  const {authenticated} = user
   return (
     <Dimmer active>
-     {authenticated? (
+     {authenticated ? (
 
         <Fragment>
           {messages.length > 0 ? <Loader size="huge" content="Preparing Chat..." />:<h1 className="animated pulse">Add message</h1>}

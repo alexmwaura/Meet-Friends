@@ -20,7 +20,7 @@ export class landingPage extends Component {
                       key={authenticatedUser && authenticatedUser.uid}
                       />
                   
-            <Grid.Column style={{ marginLeft: "15em", width: 400}}>
+            <Grid.Column style={{ marginLeft: "15em", width: '30em'}}>
             <Messages
             key={currentChannel && currentChannel.id} 
             currentChannel={currentChannel}

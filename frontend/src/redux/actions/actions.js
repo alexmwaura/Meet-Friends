@@ -72,14 +72,14 @@ export const registerUser = (createdUser) => {
   const defaultProfileImage = "profile.png";
   const defaultCoverImage = "download.png";
   const userId = firebase.auth().currentUser.uid;
-  console.log(userId)
+  // console.log(userId)
   const regUser = firebase.database().ref("users");
   const userRef = firebase
     .database()
     .ref("/users/" + userId)
     .once("value")
     .then((snapshot) => {
-      console.log(snapshot.val())
+      // console.log(snapshot.val())
       if (snapshot.val() !== null) {
 
         return {
@@ -87,7 +87,7 @@ export const registerUser = (createdUser) => {
           payload: { email: `${snapshot.val().email} exists` },
         };
       } else {
-        console.log(createdUser)
+        // console.log(createdUser)
         return regUser.child(createdUser.user.uid).set({
           email: createdUser.user.email,
           username: createdUser.user.displayName,

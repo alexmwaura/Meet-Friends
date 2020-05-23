@@ -112,10 +112,10 @@ class Channels extends Component {
   addChannel = () => {
     const { channelsRef, channelName, channelDetails } = this.state;
     const {
-      username,
+      displayName,
       email,
-      userId,
-      profileImage,
+      uid,
+      photoURL,
     } = this.props.authenticatedUser;
     const key = channelsRef.push().key;
     const newChannel = {
@@ -123,10 +123,10 @@ class Channels extends Component {
       name: channelName,
       details: channelDetails,
       createdBy: {
-        name: username,
+        name: displayName,
         email: email,
-        avatar: profileImage,
-        userId: userId,
+        avatar: photoURL,
+        userId: uid,
       },
     };
     channelsRef

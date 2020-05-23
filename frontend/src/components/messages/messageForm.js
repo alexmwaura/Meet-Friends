@@ -206,7 +206,7 @@ class messageForm extends Component {
         </Button.Group>
         ):(
           <Dimmer active>
-            <Loader size="small" content="Please Wait loding chat..." />
+            <Loader size="small" content="Please Wait loading chat..." />
           </Dimmer>
         )}
         <FileModal

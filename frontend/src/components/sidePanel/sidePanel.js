@@ -4,6 +4,7 @@ import UserPanel from "../userPanel/userpanel"
 import "../landingPage/index.css"
 import Channels from "../channels/Channels"
 import DirectMessages from "../directMessages/directMessages"
+import Starred from "../starred/starred"
 
  class sidePanel extends Component {
 
@@ -15,7 +16,10 @@ import DirectMessages from "../directMessages/directMessages"
             <Menu  fixed="left" inverted vertical style={{background: '#607d8b', fontSize: '1.2rem'}} >
                 
             <UserPanel currentUser={this.props.authenticatedUser} />
-            <br/>
+            <br />
+            <Starred 
+            currentUser={this.props.authenticatedUser}
+            />
             <Channels authenticatedUser={this.props.authenticatedUser}/>
             <DirectMessages 
             key={this.props.authenticatedUser && this.props.authenticatedUser.uid}

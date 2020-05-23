@@ -9,6 +9,7 @@ import Spinner from "../spinner/spinner";
 class Messages extends Component {
   state = {
     privateChannel: this.props.isPrivateChannel,
+    usersRef: firebase.database().ref("users"),
     messagesRef: firebase.database().ref("messages"),
     privateMessagesRef: firebase.database().ref("privateMessages"),
     channel: this.props.currentChannel,
@@ -19,32 +20,44 @@ class Messages extends Component {
     searchTerm: "",
     searchLoading: false,
     searchResults: [],
+    isChannelStarred: false,
   };
 
   componentDidMount() {
     const { channel, currentUser } = this.state;
     if (channel && currentUser) {
       this.addListeners(channel.id);
+      this.addUserStarsListener(channel.id, currentUser.uid);
     }
   }
-
-
-
-
-
+  
   getMessagesRef = () => {
-   const {messagesRef, privateMessagesRef,privateChannel} = this.state
-   return privateChannel ? privateMessagesRef:messagesRef
-  }
-
+    const { messagesRef, privateMessagesRef, privateChannel } = this.state;
+    return privateChannel ? privateMessagesRef : messagesRef;
+  };
 
   addListeners = (channelId) => {
     this.addMessageListener(channelId);
   };
 
+  addUserStarsListener = (channelId, userId) => {
+    this.state.usersRef
+      .child(userId)
+      .child("starred")
+      .once("value")
+      .then((data) => {
+        if (data.val() !== null) { 
+          const channelIds = Object.keys(data.val());
+          const prevStarred = channelIds.includes(channelId);
+          console.log(prevStarred)
+          this.setState({ isChannelStarred: prevStarred });
+        }
+      });
+  };
+
   addMessageListener = (channelId) => {
     let loadedMessages = [];
-    const ref = this.getMessagesRef()
+    const ref = this.getMessagesRef();
     ref.child(channelId).on("child_added", (snap) => {
       loadedMessages.push(snap.val());
       this.setState({ messages: loadedMessages, loading: false });
@@ -76,9 +89,8 @@ class Messages extends Component {
         />
       ))
     ) : (
-    
-     <Spinner messages={messages} />
-     
+      <Spinner messages={messages} />
+
       // <Spinner messages={messages} />'
     );
 
@@ -88,9 +100,9 @@ class Messages extends Component {
       : "";
   };
 
-  getUserPhoto = (channel)=> {
-    return channel && channel.photoURL ? channel.photoURL: ''
-  }
+  getUserPhoto = (channel) => {
+    return channel && channel.photoURL ? channel.photoURL : "";
+  };
 
   handleSearch = (event) => {
     this.setState(
@@ -117,7 +129,40 @@ class Messages extends Component {
     }, []);
     this.setState({ searchResults: searchResults });
     setTimeout(() => this.setState({ searchLoading: false }), 1000);
-  };    
+  };
+
+  handleStar = () => {
+    this.setState(prevState => ({
+        isChannelStarred: !prevState.isChannelStarred,
+      }),
+      () => this.starChannel()
+    );
+  };
+  starChannel = () => {
+    if (this.state.isChannelStarred) {
+      this.state.usersRef
+        .child(`${this.state.currentUser.uid}/starred`)
+        .update({
+          [this.state.channel.id]: {
+            name: this.state.channel.name,
+            details: this.state.channel.details,
+            createdBy: {
+              name: this.state.channel.createdBy.name,
+              avatar: this.state.channel.createdBy.avatar,
+            },
+          },
+        });
+    } else {
+      this.state.usersRef
+        .child(`${this.state.currentUser.uid}/starred`)
+        .child(this.state.channel.id)
+        .remove((err) => {
+          if (err !== null) {
+            console.error(err);
+          }
+        });
+    }
+  };
 
   render() {
     const {
@@ -130,6 +175,7 @@ class Messages extends Component {
       searchResults,
       searchLoading,
       privateChannel,
+      isChannelStarred,
     } = this.state;
     // console.log(channel)
     return (
@@ -141,6 +187,8 @@ class Messages extends Component {
           searchLoading={searchLoading}
           privateChannel={privateChannel}
           userPhoto={this.getUserPhoto(channel)}
+          handleStar={this.handleStar}
+          isChannelStarred={isChannelStarred}
         />
         <Segment>
           <Comment.Group className="messages">

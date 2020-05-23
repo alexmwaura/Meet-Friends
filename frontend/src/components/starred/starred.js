@@ -33,15 +33,13 @@ class starred extends Component {
         })
       })
 
-      this.state.userRef.child(userId).child('starred').on("child_removed",snap=> {
-        const channelToRemove = {id: snap.key(), ...snap.val()}
+      this.state.userRef.child(userId).child('starred').on("child_removed", snap=> {
+        const channelToRemove = { id: snap.key, ...snap.val() }
         const filteredChannels = this.state.starredChannels.filter(channel=> {
           return channel.id !== channelToRemove.id
         })
         this.setState({starredChannels: filteredChannels})
       })
-
-
 
     }
 

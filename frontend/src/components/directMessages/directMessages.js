@@ -1,17 +1,25 @@
 import React, { Component, Fragment } from "react";
-import { Menu, Icon, Image } from "semantic-ui-react";
+import { Menu, Icon, Image, Label } from "semantic-ui-react";
 import firebase from "../../Auth/firebase";
-import { setCurrentChannel,setPrivateChannel } from "../../redux/actions/actions";
+import {
+  setCurrentChannel,
+  setPrivateChannel,
+} from "../../redux/actions/actions";
 import { connect } from "react-redux";
 
 class directMessages extends Component {
+  
   state = {
-    activeChannel: '',
+    activeChannel: "",
     user: this.props.user,
     users: [],
+    userMessage: null,
     userRef: firebase.database().ref("users"),
     connectedRef: firebase.database().ref(".info/connected"),
     presenceRef: firebase.database().ref("presence"),
+    privateMessagesRef: firebase.database().ref("privateMessages"),
+    notifications: [],
+    firstLoad: true,
   };
 
   componentDidMount() {
@@ -31,7 +39,8 @@ class directMessages extends Component {
         loadedUsers.push(user);
       }
 
-      this.setState({ users: loadedUsers });
+      this.setState({ users: loadedUsers }, () => this.setFirstUser());
+      this.addNotificationListener(snap.key);
     });
     // console.log(loadedUsers)
     connectedRef.on("value", (snap) => {
@@ -59,6 +68,54 @@ class directMessages extends Component {
     });
   };
 
+  setFirstUser = () => {
+    const firstUser = this.state.users[0];
+    if (this.state.firstLoad && this.state.users.length > 0) {
+      this.setActiveChannel(firstUser);
+      this.setState({ userMessage: firstUser });
+    }
+    this.setState({ firstLoad: false });
+  };
+
+  setActiveChannel = (user) => {
+    this.setState({ activeChannel: user.uid });
+  };
+
+  addNotificationListener = (userId) => {
+    this.state.privateMessagesRef.child(userId).on("value", (snap) => {
+      if (this.state.userMessage) {
+        this.handleNotifications(
+          userId,
+          this.state.userMessage.uid,
+          this.state.notifications,
+          snap
+        );
+      }
+    });
+  };
+
+  handleNotifications = (userId, currentUserId,notifications, snap) => {
+    let lastTotal = 0;
+    let index = notifications.findIndex(notification => notification.id === userId)
+    if (index !== -1) {
+      if (userId !== currentUserId) {
+        lastTotal = notifications[index].total;
+        if (snap.numChildren() - lastTotal > 0) {
+          notifications[index].count = snap.numChildren() - lastTotal;
+        }
+      }
+      notifications[index].lastKnownTotal = snap.numChildren();
+    } else {
+      notifications.push({
+        id: userId,
+        total: snap.numChildren(),
+        lastKnownTotal: snap.numChildren(),
+        count: 0,
+      });
+    }
+    this.setState({ notifications });
+  };
+
   addStatusToUser = (userId, connected = true) => {
     const updatedUsers = this.state.users.reduce((acc, user) => {
       if (user.uid === userId) {
@@ -77,23 +134,50 @@ class directMessages extends Component {
   };
 
   isUserOnline = (user) => user.status === "online";
-  
+
   changeChannel = (user) => {
     const channelId = this.getChannelId(user.userId);
     const channelData = {
       id: channelId,
       name: user.username,
-      photoURL: user.profileImage
+      photoURL: user.profileImage,
     };
+    
     this.props.setCurrentChannel(channelData);
-    this.props.setPrivateChannel(true)
-    this.setActiveChannel(user.userId)
+    this.props.setPrivateChannel(true);
+    this.setActiveChannel(user);
+    this.setState({ userMessage: channelData });
+    this.clearNotifications();
   };
 
-  setActiveChannel = (userId) => this.setState({activeChannel: userId})
+  getNotificationCount = (user) => {
+    let count = 0;
+    this.state.notifications.forEach((notification) => {
+      if (notification.id === user.userId) {
+        count = notification.count;
+      }
+    });
+    if (count > 0) return count;
+  };
+
+  clearNotifications = () => {
+
+    let index = this.state.notifications.findIndex(
+      (notification) => notification.id === this.state.userMessage.uid
+    );
+
+    if (index !== -1) {
+      let updatedNotifications = [...this.state.notifications];
+      updatedNotifications[index].total = this.state.notifications[
+        index
+      ].lastKnownTotal;
+      updatedNotifications[index].count = 0;
+      this.setState({ notifications: updatedNotifications });
+    }
+  };
 
   render() {
-    const { users,activeChannel } = this.state;
+    const { users, activeChannel } = this.state;
 
     return (
       <Menu.Menu className="menu_item_direct">
@@ -104,29 +188,33 @@ class directMessages extends Component {
           </span>{" "}
           ({users.length})
         </Menu.Item>
-      
-          {users.map((user) => (
-            <Menu.Item
-              key={user.userId}
-              active={user.userId === activeChannel}
-              onClick={() => this.changeChannel(user)}
-              style={{ opacity: 0.8, fontStyle: "italic",textAlign:'left' }}
-            >
-              <Icon
-                name="circle"
-                color={this.isUserOnline(user) ? "green" : "red"}
-              />
-              <span>
-                {" "}
-                <Image src={user.profileImage} spaced="right" avatar />
-              </span>
-              {(user.username).toLowerCase()}
-            </Menu.Item>
-          ))}
-       
+
+        {users.map((user) => (
+          <Menu.Item
+            key={user.userId}
+            active={user.userId === activeChannel}
+            onClick={() => this.changeChannel(user)}
+            style={{ opacity: 0.8, fontStyle: "italic", textAlign: "left" }}
+          >
+            <Icon
+              name="circle"
+              color={this.isUserOnline(user) ? "green" : "red"}
+            />
+            <span>
+              {" "}
+              <Image src={user.profileImage} spaced="right" avatar />
+            </span>
+            {this.getNotificationCount(user) && (
+              <Label color="red">{this.getNotificationCount(user)}</Label>
+            )}
+            {user.username.toLowerCase()}
+          </Menu.Item>
+        ))}
       </Menu.Menu>
     );
   }
 }
 
-export default connect(null, { setCurrentChannel,setPrivateChannel })(directMessages);
+export default connect(null, { setCurrentChannel, setPrivateChannel })(
+  directMessages
+);

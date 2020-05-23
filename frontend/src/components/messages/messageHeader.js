@@ -11,6 +11,8 @@ class messageHeader extends Component {
       searchLoading,
       privateChannel,
       userPhoto,
+      handleStar,
+      isChannelStarred
     } = this.props;
 
     return (
@@ -19,7 +21,13 @@ class messageHeader extends Component {
           <span>
             {userPhoto ?  <Image src={userPhoto} spaced="right" style={{height: '2em'}} avatar />:""}
             {(channelName).toLowerCase()}
-           {!privateChannel &&  <Icon name={"star outline"} color="black" /> }
+           {!privateChannel && ( 
+           <Icon 
+           name={isChannelStarred? "star": "star outline"} 
+           color={isChannelStarred? "yellow": "black"}
+            onClick={handleStar}
+
+            />) }
           </span>
           <Header.Subheader>
             {parseInt(numUniqueUsers.substring(0,1)) > 0 ? (

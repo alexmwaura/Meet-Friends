@@ -5,6 +5,8 @@ import {
   SET_PRIVATE_CHANNEL,
   SET_CURRENT_CHANNEL,
   SET_USER_POST,
+  SET_CURRENT_USER,
+  SET_COLORS
 } from "../store/types";
 import firebase from "../../Auth/firebase";
 import axios from "axios";
@@ -30,6 +32,22 @@ export const login = (email, password) => (dispatch, next) => {
     });
 };
 
+export const getCurrentUser=(user)=> {
+  return{
+    type: SET_CURRENT_USER,
+    payload: user
+  }
+}
+
+export const setColors = (primary,secondary) => {
+  return {
+    type: SET_COLORS,
+    payload: {
+      primary,
+      secondary
+    }
+  }
+}
 
 export const multiAuth = (provider, scope) => (dispatch) => {
   provider.addScope(`${scope[0]}`);
@@ -197,3 +215,4 @@ export const setUserPosts = message => {
     payload: message
   }
 }
+

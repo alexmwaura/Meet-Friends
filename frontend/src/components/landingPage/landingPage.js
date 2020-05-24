@@ -12,14 +12,20 @@ export class landingPage extends Component {
       authenticatedUser,
       isPrivateChannel,
       userPost,
+      userColors
     } = this.props;
     // console.log(isPrivateChannel)
     return (
-      <Grid container columns="equal" className="app">
-        <ColorPanel />
+      <Grid container columns="equal" className="app" style={{background: `${userColors.primary}`}}>
+        <ColorPanel 
+        key={authenticatedUser && authenticatedUser.name}
+        user={authenticatedUser}
+        
+        />
         <SidePanel
           authenticatedUser={authenticatedUser}
           key={authenticatedUser && authenticatedUser.uid}
+          userColors={userColors}
         />
 
      <Grid style={{marginLeft: "14em"}}>

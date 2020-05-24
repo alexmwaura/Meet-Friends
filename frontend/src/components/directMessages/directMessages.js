@@ -82,7 +82,8 @@ class directMessages extends Component {
   };
 
   addNotificationListener = (userId) => {
-    this.state.privateMessagesRef.child(userId).on("value", (snap) => {
+    // this.state.privateMessagesRef
+    this.state.privateMessagesRef.child(userId).child(this.state.user.uid).on("value", (snap) => {
       if (this.state.userMessage) {
         this.handleNotifications(
           userId,
@@ -146,7 +147,7 @@ class directMessages extends Component {
     this.props.setCurrentChannel(channelData);
     this.props.setPrivateChannel(true);
     this.setActiveChannel(user);
-    this.setState({ userMessage: channelData });
+    this.setState({ userMessage: user });
     this.clearNotifications();
   };
 

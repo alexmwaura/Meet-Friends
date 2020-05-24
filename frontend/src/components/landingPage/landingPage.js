@@ -1,49 +1,51 @@
-import React, { Component } from 'react'
-import {Grid} from "semantic-ui-react"
-import ColorPanel from "../colorPanel/colorPanel"
-import SidePanel from "../sidePanel/sidePanel"
-import Messages from "../messages/Messages"
-import MetaPanel from "../metaPanel/metaPanel"
-
-
+import React, { Component } from "react";
+import { Grid } from "semantic-ui-react";
+import ColorPanel from "../colorPanel/colorPanel";
+import SidePanel from "../sidePanel/sidePanel";
+import Messages from "../messages/Messages";
+import MetaPanel from "../metaPanel/metaPanel";
 
 export class landingPage extends Component {
-   
-    render() {
-        const {currentChannel,authenticatedUser,isPrivateChannel} = this.props
-        // console.log(isPrivateChannel)
-        return (
-            <Grid container columns="equal" className="app" >
-                <ColorPanel/>
-                      <SidePanel 
-                      authenticatedUser={authenticatedUser}
-                      key={authenticatedUser && authenticatedUser.uid}
-                      />
-                  
-            <Grid.Column style={{ marginLeft: "15em", width: '30em'}}>
-            <Messages
-            key={currentChannel && currentChannel.id} 
+  render() {
+    const {
+      currentChannel,
+      authenticatedUser,
+      isPrivateChannel,
+      userPost,
+    } = this.props;
+    // console.log(isPrivateChannel)
+    return (
+      <Grid container columns="equal" className="app">
+        <ColorPanel />
+        <SidePanel
+          authenticatedUser={authenticatedUser}
+          key={authenticatedUser && authenticatedUser.uid}
+        />
+
+     <Grid style={{marginLeft: "14em"}}>
+     <Grid.Column style={{  width: "45em" }}>
+          <Messages
+            key={currentChannel && currentChannel.id}
             currentChannel={currentChannel}
             authenticatedUser={authenticatedUser}
             isPrivateChannel={isPrivateChannel}
-            
-            />
-            </Grid.Column>
+          />
+        </Grid.Column>
 
-            <Grid.Column style={{ width: 4}}>
-            <MetaPanel 
-            key={currentChannel && currentChannel.id}
-            isPrivateChannel={isPrivateChannel}
-            currentChannel={currentChannel}
-            
+        <Grid.Column style={{width: "20em"}}>
+          <span>
+            <MetaPanel
+              key={currentChannel && currentChannel.id}
+              isPrivateChannel={isPrivateChannel}
+              currentChannel={currentChannel}
+              userPost={userPost}
             />
-            </Grid.Column>
-              
-            </Grid>
-        )
-    }
+          </span>
+        </Grid.Column>
+     </Grid>
+      </Grid>
+    );
+  }
 }
 
-
-
-export default landingPage
+export default landingPage;

@@ -52,6 +52,7 @@ class starred extends Component {
         name={channel.name}
         style={{ opacity: 0.8, textAlign: "left" }}
         active={channel.id === this.state.activeChannel}
+        className="animated fadeInDown delay-0.5s"
       >
         # {channel.name}
       </Menu.Item>

@@ -72,7 +72,7 @@ class directMessages extends Component {
     const firstUser = this.state.users[0];
     if (this.state.firstLoad && this.state.users.length > 0) {
       this.setActiveChannel(firstUser);
-      this.setState({ userMessage: firstUser });
+      this.setState({ userMessage: this.state.user });
     }
     this.setState({ firstLoad: false });
   };

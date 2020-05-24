@@ -27,7 +27,7 @@ class Channels extends Component {
     this.addListeners();
   }
 
-  UNSAFE_componentWillMount() {
+  componentWillMount() {
     this.removeListeners();
   }
 

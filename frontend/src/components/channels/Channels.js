@@ -201,7 +201,7 @@ class Channels extends Component {
     const { modal, channels } = this.state;
     return (
       <Fragment>
-        <Menu.Menu className="menu_item2">
+        <Menu.Menu className="animated fadeInDown menu_item2" >
           <Menu.Item style={{ textAlign: "left" }}>
             <span>
               <Icon name="exchange" /> CHANNELS{" "}

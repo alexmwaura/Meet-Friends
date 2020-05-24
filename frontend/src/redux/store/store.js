@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 
-import {userReducer,currentChannelReducer} from '../reducers/reducers';
+import {userReducer,currentChannelReducer,setColorsReducers} from '../reducers/reducers';
 import uiReducer from '../reducers/uiReducers';
 
 const initialState = {};
@@ -11,7 +11,8 @@ const middleware = [thunk];
 const reducers = combineReducers({
   user: userReducer,
   channel: currentChannelReducer,
-  UI: uiReducer
+  UI: uiReducer,
+  colors: setColorsReducers,
 });
 
 

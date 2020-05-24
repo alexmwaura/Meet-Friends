@@ -4,15 +4,24 @@ import {
   SET_UNAUTHENTICATED,
   SET_PRIVATE_CHANNEL,
   SET_CURRENT_CHANNEL,
+  SET_CURRENT_USER,
   SET_USER_POST,
+  SET_COLORS
 } from "../store/types";
 const initialState = {
   authenticated: false,
   authenticatedUser: null,
+  currentUser: null,
 };
 
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_CURRENT_USER:
+      return {
+        ...state,
+        currentUser: action.payload,
+      }
+
     case SET_AUTHENTICATED:
       return {
         ...state,
@@ -54,4 +63,20 @@ export const currentChannelReducer = (state = initialChannelState, action) => {
 };
 
 
+const initialColorState = {
+   primary: '#4d1919',
+   secondary: '#192c4d'
+}
+export const setColorsReducers = (state=initialColorState,action) => {
+  switch (action.type) {
+    case SET_COLORS:
+      return{
+        ...state,
+        primary: action.payload.primary,
+        secondary: action.payload.secondary,
 
+      }
+    default:
+      return state  
+  }
+}

@@ -5,6 +5,9 @@ import MessageForm from "./messageForm";
 import firebase from "../../Auth/firebase";
 import Message from "./Message";
 import Spinner from "../spinner/spinner";
+import {connect} from "react-redux"
+import {setUserPosts} from '../../redux/actions/actions'
+
 
 class Messages extends Component {
   state = {
@@ -49,7 +52,7 @@ class Messages extends Component {
         if (data.val() !== null) { 
           const channelIds = Object.keys(data.val());
           const prevStarred = channelIds.includes(channelId);
-          console.log(prevStarred)
+          // console.log(prevStarred)
           this.setState({ isChannelStarred: prevStarred });
         }
       });
@@ -63,6 +66,7 @@ class Messages extends Component {
       this.setState({ messages: loadedMessages, loading: false });
     });
     this.countUniqueUsers(loadedMessages);
+    this.countUserPosts(loadedMessages)
   };
 
   countUniqueUsers = (messages) => {
@@ -78,6 +82,22 @@ class Messages extends Component {
     }`;
     this.setState({ numUniqueUsers: numUniqueUsers });
   };
+
+
+  countUserPosts = (messages) => {
+    let userPosts = messages.reduce((acc,message)=> {
+      if(message.user.name in acc){
+        acc[message.user.name].count += 1
+      }else {
+        acc[message.user.name] = {
+          avatar: message.user.avatar,
+          count: 1
+        }
+      }
+      return acc
+    },{})
+    this.props.setUserPosts(userPosts)
+  }
 
   displayMessages = (messages) =>
     messages.length > 0 ? (
@@ -209,4 +229,4 @@ class Messages extends Component {
   }
 }
 
-export default Messages;
+export default connect(null,{setUserPosts})(Messages);

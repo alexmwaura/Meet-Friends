@@ -4,6 +4,7 @@ import {
   SET_AUTHENTICATED,
   SET_PRIVATE_CHANNEL,
   SET_CURRENT_CHANNEL,
+  SET_USER_POST,
 } from "../store/types";
 import firebase from "../../Auth/firebase";
 import axios from "axios";
@@ -187,5 +188,12 @@ export const setPrivateChannel = isPrivateChannel => {
       payload: {
           isPrivateChannel
       }
+  }
+}
+
+export const setUserPosts = message => {
+  return {
+    type:SET_USER_POST,
+    payload: message
   }
 }

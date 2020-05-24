@@ -4,6 +4,7 @@ import {
   SET_UNAUTHENTICATED,
   SET_PRIVATE_CHANNEL,
   SET_CURRENT_CHANNEL,
+  SET_USER_POST,
 } from "../store/types";
 const initialState = {
   authenticated: false,
@@ -30,6 +31,7 @@ export const userReducer = (state = initialState, action) => {
 const initialChannelState = {
   currentChannel: null,
   isPrivateChannel: false,
+  userPost: null,
 };
 
 export const currentChannelReducer = (state = initialChannelState, action) => {
@@ -41,6 +43,11 @@ export const currentChannelReducer = (state = initialChannelState, action) => {
         ...state,
         isPrivateChannel: action.payload.isPrivateChannel,
       };
+    case SET_USER_POST: 
+      return {
+        ...state,
+        userPost: action.payload
+      }  
     default:
       return state;
   }

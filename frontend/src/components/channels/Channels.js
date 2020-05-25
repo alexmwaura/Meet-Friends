@@ -7,6 +7,7 @@ import {
   setPrivateChannel,
 } from "../../redux/actions/actions";
 import { connect } from "react-redux";
+import Box from "@material-ui/core/Box"
 
 class Channels extends Component {
   state = {
@@ -27,7 +28,7 @@ class Channels extends Component {
     this.addListeners();
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.removeListeners();
   }
 
@@ -146,7 +147,6 @@ class Channels extends Component {
     let count = 0
     this.state.notifications.forEach(notification=> {
         if(notification.id === channel.id){
-
             count = notification.count
         }
     })
@@ -209,7 +209,9 @@ class Channels extends Component {
             ({channels.length}){" "}
             <Icon name="add" className="add" onClick={this.openModal} />
           </Menu.Item>
+          <Box style={{height:'18vh',overflow:"auto"}}>
           {this.displayChannels(channels)}
+          </Box>
         </Menu.Menu>
 
         <Modal basic open={modal} onClose={this.closeModal}>
@@ -223,16 +225,22 @@ class Channels extends Component {
                     style={{ backGroundColor: "#607d8b" }}
                   >
                     <Input
+                    type="text"
+                    icon="tags icon"
+                    className="ui right labeled left icon input"
                       fluid
-                      label="Name of channel"
+                      placeholder="Name of channel"
                       name="channelName"
                       onChange={this.handleChange}
                     />
                   </Form.Field>
                   <Form.Field className="form-control">
                     <Input
+                     type="text"
+                     icon="tags icon"
+                     className="ui right labeled left icon input"
                       fluid
-                      label="About the channel"
+                      placeholder="About the channel"
                       name="channelDetails"
                       onChange={this.handleChange}
                     />

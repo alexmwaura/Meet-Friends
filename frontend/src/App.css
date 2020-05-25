@@ -9,16 +9,19 @@ html,body
   --scrollbarBG: #eee;
   --thumbBG2: #044238;
   --thumbBG: #b1d6ee;
-   height: 100vh;
   background: #eee;
   padding: 1em;
+  height: 50vh;
 }
 .app{
-    margin: 0;
-    height: 100vh;
-    background: #eee;
+    /* margin: 0; */
+    height: 50vh;
+    /* position: fixed; */
+    /* float: left; */
     padding: 1em;
 }
+
+
 
 .pulse {
   animation-duration: 3s;
@@ -45,25 +48,28 @@ html::-webkit-scrollbar-corner {
   background-color: var(--scrollbarBG);
 }
 
-.menu_item_direct::-webkit-scrollbar {
-  width: 8px;
+menu_item_direct {
+  text-align: center;
 }
-.menu_item_direct {
-  scrollbar-width: thin;
-  scrollbar-color: var(--thumbBG2) var(--scrollbarBG);
-}
-.menu_item_direct::-webkit-scrollbar-track {
-  background: var(--scrollbarBG);
-}
-.menu_item_direct::-webkit-scrollbar-thumb {
-  background-color: var(--thumbBG2);
-  border-radius: 6px;
-  border: 3px solid var(--scrollbarBG);
-}
-.menu_item_direct::-webkit-scrollbar-corner {
-  background-color: var(--scrollbarBG);
+.color__container {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width: 35px;
+  border-radius: 3px;
 }
 
+.color__square {
+  width: 35px;
+  height: 35px;
+  border-radius: 50px;
+}
+
+.color__overlay {
+  width: 85px;
+  height: 35px;
+  transform: rotate(225deg);
+}
 
 
 .messages::-webkit-scrollbar {
@@ -89,22 +95,45 @@ html::-webkit-scrollbar-corner {
 }
 .message__form{
   position: fixed !important;
-  bottom: 1em;
-  margin-left: 320px !important;
+  width: 60vh;
+  top: 36em;
+
+  margin-left: 400px !important;
   left: 0;
   right: 1em;
   z-index: 200;
 }
 .message__self{
- 
-  padding-left: 10em;
+ /* border-left: 2px solid orange; */
+  /* float: right; */
+  margin-left: 17em;
+  
+  
+
+  /* padding-left: 10em; */
   
 }
+
+
+.message_others {
+
+ padding-left: 5em;
+  /* align-content: flex-start; */
+  /* margin-bottom: 2em; */
+}
+
+.message_others_two {
+  color: rgb(139, 122, 27);
+
+}
+
 .message__selfTwo{
+  color: rgb(27, 139, 139);
+  
+  /* display: none; */
   /* text-align: right; */
   /* float: right; */
   /* border-left: 2px solid orange; */
-  padding-left: 5px;
 }
 .comment{
   padding-bottom: 200px;

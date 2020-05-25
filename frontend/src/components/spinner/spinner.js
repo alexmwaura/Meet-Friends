@@ -1,15 +1,14 @@
 import React,{Fragment} from "react";
-import { Loader, Dimmer } from "semantic-ui-react";
+import { Loader, Dimmer,Segment, Header } from "semantic-ui-react";
 import {connect} from "react-redux"
 import Box from "@material-ui/core/Box"
-import Typography from "@material-ui/core/Typography"
 
 const Spinner = ({user,messages}) => {
  
 
  const {authenticated} = user
   return (
-   <Fragment>
+   <Segment>
      {authenticated ? (
     
        
@@ -19,13 +18,12 @@ const Spinner = ({user,messages}) => {
               <Loader size="huge" content="Preparing Chat..." />
               </Dimmer>)
             : 
-            <Box>
-               <Typography className="animated pulse" style={{backgroundColor:"#fff", color:"#000", textAlign:"center",height:"54vh"}}>
+            <Box  className="animated pulse">
+               <Header as="h1" style={{backgroundColor:"#fff", color:"#000", textAlign:"center",height:"54vh",fontFamily:"italic", fontSize:"xx-large"}}>
 
-                 <h1 style={{fontFamily:"italic", fontSize:"xx-large"}}>
                  Add Message
-                 </h1>
-               </Typography>
+              
+               </Header>
             </Box>
             
             }
@@ -37,7 +35,7 @@ const Spinner = ({user,messages}) => {
       <Loader size="huge" content="Please Wait login in..." />
     
      )}
-    </Fragment>
+    </Segment>
   )
 
 }

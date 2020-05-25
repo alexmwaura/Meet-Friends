@@ -33,6 +33,9 @@ class Messages extends Component {
       this.addUserStarsListener(channel.id, currentUser.uid);
     }
   }
+  componentWillMount() {
+    this.state.privateMessagesRef.off()
+  }
   
   getMessagesRef = () => {
     const { messagesRef, privateMessagesRef, privateChannel } = this.state;
@@ -199,7 +202,7 @@ class Messages extends Component {
     } = this.state;
     // console.log(channel)
     return (
-      <Fragment>
+      <Segment style={{  width: "50em",background: this.props.userColors.primaryColor,border:"none" }}>
         <MessagesHeader
           handleSearch={this.handleSearch}
           channelName={this.displayChannelName(channel)}
@@ -210,7 +213,7 @@ class Messages extends Component {
           handleStar={this.handleStar}
           isChannelStarred={isChannelStarred}
         />
-        <Segment>
+        <Segment >
           <Comment.Group className="messages">
             {searchTerm
               ? this.displayMessages(searchResults)
@@ -224,7 +227,7 @@ class Messages extends Component {
           currentUser={currentUser}
           getMessagesRef={this.getMessagesRef}
         />
-      </Fragment>
+      </Segment>
     );
   }
 }

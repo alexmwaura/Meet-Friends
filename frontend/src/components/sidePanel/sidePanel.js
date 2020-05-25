@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
-import {Menu,Button} from "semantic-ui-react"
+import {Menu, Sidebar} from "semantic-ui-react"
 import UserPanel from "../userPanel/userpanel"
 import "../landingPage/index.css"
 import Channels from "../channels/Channels"
 import DirectMessages from "../directMessages/directMessages"
 import Starred from "../starred/starred"
 import Box from "@material-ui/core/Box"
+import AboutMe from "../AboutMe/about"
 
  class sidePanel extends Component {
 
     state = {
-        displayActiveUsers: "inline"
+        displayActiveUsers: "inline",
+       
     }
 
     handleDisplayActiveUsers =()=> {
@@ -20,32 +22,53 @@ import Box from "@material-ui/core/Box"
         this.setState({displayActiveUsers: "inline"})
     }
 
+    
+
     render() {
         return (
 
-           
+         
         
-            <Menu  fixed="left" size="large" inverted vertical style={{background: `${this.props.userColors.secondary}`, fontSize: '1.2rem'}} >
                 
-            <UserPanel currentUser={this.props.authenticatedUser} />
+            <Menu
+            inverted
+            
+            // fluid
+            fixed="left"
+            vertical
+            size="small"
+            style={{background: `${this.props.userColors.secondaryColor}`, fontSize: '1.2rem', height: '100vh', overFlow: "scroll", }}
+            >
+            <UserPanel
+            currentUser={this.props.authenticatedUser} 
+           
+            
+            />
             <br />
             <Starred 
             currentUser={this.props.authenticatedUser}
             />
+
+            <DirectMessages 
+            handleDisplayActiveUsers={this.handleDisplayActiveUsers}
+            user = {this.props.authenticatedUser}
+            closeActiveUsers={this.closeActiveUsers}
+            />
+
             <Box display={this.state.displayActiveUsers} >
             <Channels authenticatedUser={this.props.authenticatedUser}/>
-            </Box>
-    
-           <DirectMessages 
-            key={this.props.authenticatedUser && this.props.authenticatedUser.uid}
-            user={this.props.authenticatedUser}
-            handleDisplayActiveUsers={this.handleDisplayActiveUsers}
-            closeActiveUsers={this.closeActiveUsers}
-
+            <AboutMe 
+            
+            
             />
+            </Box>
+            </Menu>
+    
+         
+          
            
            
-         </Menu>
+       
          
         )
     }

@@ -116,7 +116,7 @@ button:focus{
   /* box-shadow: 0px 1px 0px 1px rgba(0,0,0,0.05); */
   text-shadow:0 4px 7px  black;
   overflow-y: auto;
-  height: 50vh;
+  height: fit-content;
 }
 
 .dropdown{

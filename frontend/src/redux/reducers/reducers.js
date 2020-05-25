@@ -64,16 +64,16 @@ export const currentChannelReducer = (state = initialChannelState, action) => {
 
 
 const initialColorState = {
-   primary: '#4d1919',
-   secondary: '#192c4d'
+   primaryColor: "#193b4d",
+    secondaryColor: "#19394d"
 }
 export const setColorsReducers = (state=initialColorState,action) => {
   switch (action.type) {
     case SET_COLORS:
       return{
         ...state,
-        primary: action.payload.primary,
-        secondary: action.payload.secondary,
+        primaryColor: action.payload.primaryColor,
+        secondaryColor: action.payload.secondaryColor
 
       }
     default:

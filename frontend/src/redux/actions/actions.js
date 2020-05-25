@@ -6,7 +6,8 @@ import {
   SET_CURRENT_CHANNEL,
   SET_USER_POST,
   SET_CURRENT_USER,
-  SET_COLORS
+  SET_COLORS,
+  FIRST_LOAD
 } from "../store/types";
 import firebase from "../../Auth/firebase";
 import axios from "axios";
@@ -19,7 +20,7 @@ export const login = (email, password) => (dispatch, next) => {
     .signInWithEmailAndPassword(email, password)
     .then((data) => {
       if (data) {
-        const { email } = data.user;
+        // const { email } = data.user;
         dispatch(registerUser(data))
         
       }
@@ -32,6 +33,13 @@ export const login = (email, password) => (dispatch, next) => {
     });
 };
 
+export const firstLoad = ()=> {
+  return {
+    type: FIRST_LOAD,
+    payload: "inline"
+  }
+}
+
 export const getCurrentUser=(user)=> {
   return{
     type: SET_CURRENT_USER,
@@ -39,12 +47,12 @@ export const getCurrentUser=(user)=> {
   }
 }
 
-export const setColors = (primary,secondary) => {
+export const setColors = (primaryColor,secondaryColor) => {
   return {
     type: SET_COLORS,
     payload: {
-      primary,
-      secondary
+      primaryColor,
+      secondaryColor
     }
   }
 }
@@ -88,12 +96,11 @@ export const authenticateGoogle = () => (dispatch) => {
 };
 
 export const registerUser = (createdUser) => {
-  const defaultProfileImage = "profile.png";
   const defaultCoverImage = "download.png";
   const userId = firebase.auth().currentUser.uid;
   // console.log(userId)
   const regUser = firebase.database().ref("users");
-  const userRef = firebase
+  firebase
     .database()
     .ref("/users/" + userId)
     .once("value")
@@ -188,6 +195,7 @@ export const setAuthenticatedUser = (user) => {
     payload: user,
   };
 };
+
 
 
 

@@ -91,11 +91,21 @@ class directMessages extends Component {
   };
 
   addNotificationListener = (channelUserId) => {
-    // this.state.privateMessagesRef
-    
+    // this.state.privateMessagesRef    
       this.state.privateMessagesRef
       .child(this.state.user.uid)
       .child(channelUserId).on("value", snap=> {
+        console.log(snap.key)
+        this.handleNotifications(
+          channelUserId,
+          this.state.user.uid,
+          this.state.notifications,
+          snap
+        )
+      })
+      this.state.privateMessagesRef
+      .child(channelUserId)
+      .child(this.state.user.uid).on("value", snap=> {
         this.handleNotifications(
           channelUserId,
           this.state.user.uid,
@@ -104,7 +114,7 @@ class directMessages extends Component {
         )
       })
    
-  };
+};
 
   handleNotifications = (currentUserChannelId,userId,notifications,snap) => {
     let lastTotal = 0;
@@ -171,7 +181,7 @@ class directMessages extends Component {
   getNotificationCount = (user) => {
     let count = 0;
     this.state.notifications.forEach((notification) => {
-      if (notification.id === user.userId) {
+      if (notification.id === user.userId && notification.id !== this.state.userMessage.uid) {
         count = notification.count;
       }
     })

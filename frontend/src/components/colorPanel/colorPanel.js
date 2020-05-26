@@ -1,19 +1,21 @@
-import React from "react";
+import React,{Fragment} from "react";
 import firebase from "../../Auth/firebase";
 import { connect } from "react-redux";
 import { setColors } from "../../redux/actions/actions";
 // prettier-ignore
 import { Sidebar, Menu, Divider, Button, Modal, Icon, Label, Segment } from "semantic-ui-react";
 import { SliderPicker } from "react-color";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 class ColorPanel extends React.Component {
   state = {
     modal: false,
+    loading: false,
     primary: "",
     secondary: "",
     user: this.props.currentUser,
     usersRef: firebase.database().ref("users"),
-    userColors: []
+    userColors: [],
   };
 
   componentDidMount() {
@@ -22,17 +24,17 @@ class ColorPanel extends React.Component {
     }
   }
 
-  addListener = userId => {
+  addListener = (userId) => {
     let userColors = [];
-    this.state.usersRef.child(`${userId}/colors`).on("child_added", snap => {
+    this.state.usersRef.child(`${userId}/colors`).on("child_added", (snap) => {
       userColors.unshift(snap.val());
       this.setState({ userColors });
     });
   };
 
-  handleChangePrimary = color => this.setState({ primary: color.hex });
+  handleChangePrimary = (color) => this.setState({ primary: color.hex });
 
-  handleChangeSecondary = color => this.setState({ secondary: color.hex });
+  handleChangeSecondary = (color) => this.setState({ secondary: color.hex });
 
   handleSaveColors = () => {
     // console.log(this.state.primary,this.state.secondary)
@@ -42,21 +44,23 @@ class ColorPanel extends React.Component {
   };
 
   saveColors = (primary, secondary) => {
-    this.state.usersRef
-      .child(`${this.state.user.uid}/colors`)
-      .push()
-      .update({
-        primary,
-        secondary
-      })
-      .then(() => {
-        console.log("Colors added");
-        this.closeModal();
-      })
-      .catch(err => console.error(err));
+    this.setState({ loading: true }, () =>
+      this.state.usersRef
+        .child(`${this.state.user.uid}/colors`)
+        .push()
+        .update({
+          primary,
+          secondary,
+        })
+        .then(() => {
+          console.log("Colors added");
+          this.setState({ loading: false }, () => this.closeModal());
+        })
+        .catch((err) => console.error(err))
+    );
   };
 
-  displayUserColors = colors =>
+  displayUserColors = (colors) =>
     colors.length > 0 &&
     colors.map((color, i) => (
       <React.Fragment key={i}>
@@ -80,14 +84,14 @@ class ColorPanel extends React.Component {
   closeModal = () => this.setState({ modal: false });
 
   render() {
-    const { modal, primary, secondary, userColors } = this.state;
+    const { modal, primary, secondary, userColors, loading } = this.state;
 
     return (
       <Sidebar
-        as={Menu}
+        // as={}
         icon="labeled"
-        inverted
-        vertical
+      
+        vertical ="true"
         visible
         width="very thin"
       >
@@ -116,16 +120,23 @@ class ColorPanel extends React.Component {
             </Segment>
           </Modal.Content>
           <Modal.Actions>
-            <Button color="green" inverted 
-            onClick={this.handleSaveColors}
-            
-            
-            >
-              <Icon name="checkmark" /> Save Colors
-            </Button>
-            <Button color="red" inverted onClick={this.closeModal}>
-              <Icon name="remove" /> Cancel
-            </Button>
+            {loading ? (
+              <CircularProgress   size={50} disableShrink />
+            ) : (
+              <Fragment>
+                <Button
+                  color="green"
+                  inverted
+                  onClick={this.handleSaveColors}
+                  // disabled={loading}
+                >
+                  <Icon name="checkmark" /> Save Colors
+                </Button>
+                <Button color="red" inverted onClick={this.closeModal}>
+                  <Icon name="remove" /> Cancel
+                </Button>
+              </Fragment>
+            )}
           </Modal.Actions>
         </Modal>
       </Sidebar>
@@ -133,7 +144,4 @@ class ColorPanel extends React.Component {
   }
 }
 
-export default connect(
-  null,
-  { setColors }
-)(ColorPanel);
+export default connect(null, { setColors })(ColorPanel);

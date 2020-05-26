@@ -207,10 +207,10 @@ class userpanel extends Component {
                 onChange={this.handleChange}
                 fluid
                 icon="user"
+                iconPosition="right"
                 type="file"
                 label="New Avatar"
                 name="previewImage"
-                iconPosition="left"
               />
               <Grid centered stackable columns={2}>
                 <Grid.Row centered>

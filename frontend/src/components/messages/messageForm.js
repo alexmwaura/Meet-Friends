@@ -7,6 +7,7 @@ import ProgressBar from "./ProgressBar";
 import { Loader, Dimmer } from "semantic-ui-react";
 
 
+
 class messageForm extends Component {
   state = {
     storageRef: firebase.storage().ref(),
@@ -21,6 +22,7 @@ class messageForm extends Component {
     errors: [],
     modal: false,
     percentUploaded: 0,
+    typingRef: firebase.database().ref("typing")
   };
 
   openModal = () => this.setState({ modal: true });
@@ -103,17 +105,31 @@ class messageForm extends Component {
     );
   };
 
+  handleKeyDown = () => {
+    const {message, typingRef,channel,user} = this.state
+    if(!message) {
+      typingRef.child(channel.id).child(user.uid)
+      .remove()
+    }else {
+      typingRef.child(channel.id).child(user.uid)
+      .set(user.displayName)
+    }
+  }
+
+
   sendMessage = () => {
-    const { message, channel } = this.state;
+    const { message, channel,typingRef,user } = this.state;
     const {getMessagesRef} = this.props
     if (message) {
       this.setState({ loading: true });
       getMessagesRef()
-        .child(channel.id)
+        .child(channel.id) 
         .push()
         .set(this.createMessage())
         .then(() => {
+          typingRef.child(channel.id).child(user.uid).remove()
           this.setState({ loading: false, message: "", errors: [] });
+
         })
         .catch((error) => {
           console.error(error);
@@ -167,9 +183,10 @@ class messageForm extends Component {
         <Input
           fluid
           name="message"
+          onKeyDown ={this.handleKeyDown}
           style={{ marginBottom: "0.7em" }}
-          label={<Button icon={"add"} />}
-          value={message}
+          label={<Button icon={"add"}  />}
+           value={message}
           labelPosition="left"
           placeholder="Write your message"
           onChange={this.handleChange}

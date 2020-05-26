@@ -1,12 +1,11 @@
-.login{
+.login {
   margin: 100px 10px auto 100px;
   position: relative;
   align-items: center;
   float: inline-end;
-
 }
 
-form{
+form {
   text-align: center;
   align-items: center;
 }
@@ -17,28 +16,25 @@ form{
   color: #737373;
   border-radius: 5px;
   white-space: nowrap;
-  box-shadow: 1px 1px 0px 1px rgba(0,0,0,0.05);
+  box-shadow: 1px 1px 0px 1px rgba(0, 0, 0, 0.05);
   transition-property: background-color, box-shadow;
   transition-duration: 150ms;
   transition-timing-function: ease-in-out;
   padding: 0;
- cursor: pointer;
-
+  cursor: pointer;
 }
 
-
-
-.google-button:hover{
+.google-button:hover {
   box-shadow: 1px 4px 5px 1px rgba(2, 0, 0, 0.1);
   background-color: #795548;
   color: #fff;
 }
-.google-button:active{
+.google-button:active {
   background-color: #e5e5e5;
   box-shadow: none;
   transition-duration: 10ms;
 }
-    
+
 .google-button__icon {
   display: inline-block;
   vertical-align: middle;
@@ -58,7 +54,7 @@ form{
   padding: 0 24px;
   font-size: 14px;
   font-weight: bold;
-  font-family: 'Roboto',arial,sans-serif;
+  font-family: "Roboto", arial, sans-serif;
 }
 .button__text {
   display: inline-block;
@@ -66,15 +62,13 @@ form{
   padding: 0 24px;
   font-size: 14px;
   font-weight: bold;
-  font-family: 'Roboto',arial,sans-serif;
+  font-family: "Roboto", arial, sans-serif;
 }
 
 button {
   margin-right: 10px;
- 
 }
-.button{
-  
+.button {
   border-width: 0;
   background: white;
   color: #737373;
@@ -85,47 +79,103 @@ button {
   transition-duration: 150ms;
   transition-timing-function: ease-in-out;
   padding: 0;
- cursor: pointer;
+  cursor: pointer;
 }
-.add{
+.add {
   cursor: pointer;
   border-radius: 5px;
   white-space: nowrap;
-  text-shadow:0px 0px 10px  #98bed1;
+  text-shadow: 0px 0px 10px #98bed1;
   transition-property: background-color, box-shadow;
   transition-duration: 150ms;
   transition-timing-function: ease-in-out;
   padding: 0;
 }
 
-button:focus{
+button:focus {
   outline: none;
 }
 
-.menu_item{
+.menu_item {
   /* box-shadow: 0px 1px 0px 1px rgba(0,0,0,0.05); */
-  text-shadow:0 10px 7px  black;
+  text-shadow: 0 10px 7px black;
 }
-.menu_item2{
+.menu_item2 {
   /* box-shadow: 0px 1px 0px 1px rgba(0,0,0,0.05); */
   /* text-shadow:0px 1px 10px  #272d30; */
   padding-bottom: 2em;
 }
 
-.menu_item_direct{
+.menu_item_direct {
   /* box-shadow: 0px 1px 0px 1px rgba(0,0,0,0.05); */
-  text-shadow:0 4px 7px  black;
+  text-shadow: 0 4px 7px black;
   overflow-y: auto;
   height: fit-content;
 }
 
-.dropdown{
-cursor: pointer;
+.dropdown {
+  cursor: pointer;
 }
-.login{
+.login {
   margin-right: 5em;
 }
 
-.search{
+.search {
   cursor: pointer;
+}
+@media (max-width: 600px) {
+  .sidebar {
+    display: none;
+    height: 0;
+  }
+}
+.user__typing {
+  font-style: italic;
+  font-weight: bold;
+  margin-right: 3px;
+}
+
+.typing {
+  width: 5em;
+  height: 2em;
+  position: relative;
+  padding: 10px;
+  margin-left: 5px;
+  background: #e6e6e6;
+  border-radius: 20px;
+}
+
+.typing__dot {
+  float: left;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  background: #8d8c91;
+  border-radius: 50%;
+  opacity: 0;
+  animation: loadingFade 1s infinite;
+}
+
+.typing__dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing__dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing__dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loadingFade {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
 }

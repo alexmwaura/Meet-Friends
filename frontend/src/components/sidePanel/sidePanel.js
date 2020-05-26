@@ -8,12 +8,17 @@ import Starred from "../starred/starred"
 import Box from "@material-ui/core/Box"
 import AboutMe from "../AboutMe/about"
 
- class sidePanel extends Component {
+
+class sidePanel extends Component {
 
     state = {
         displayActiveUsers: "inline",
        
+       
     }
+
+
+    
 
     handleDisplayActiveUsers =()=> {
         this.setState({displayActiveUsers: "none"})
@@ -25,6 +30,7 @@ import AboutMe from "../AboutMe/about"
     
 
     render() {
+        const { isMobile,displayActiveUsers } = this.state;
         return (
 
          
@@ -32,7 +38,7 @@ import AboutMe from "../AboutMe/about"
                 
             <Menu
             inverted
-            
+            // className="sidebar"
             // fluid
             fixed="left"
             vertical
@@ -55,7 +61,7 @@ import AboutMe from "../AboutMe/about"
             closeActiveUsers={this.closeActiveUsers}
             />
 
-            <Box display={this.state.displayActiveUsers} >
+            <Box display={displayActiveUsers} >
             <Channels authenticatedUser={this.props.authenticatedUser}/>
             <AboutMe 
             

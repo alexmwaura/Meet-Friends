@@ -7,6 +7,7 @@ import {
   setPrivateChannel,
 } from "../../redux/actions/actions";
 import { connect } from "react-redux";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Box from "@material-ui/core/Box"
 
 class Channels extends Component {
@@ -15,13 +16,15 @@ class Channels extends Component {
     channels: [],
     channelName: "",
     channelDetails: "",
+    user: this.props.authenticatedUser,
     modal: false,
     channelsRef: firebase.database().ref("channels"),
     firstLoad: true,
     activeChannel: "",
-    loading: true,
+    loading: false,
     messagesRef: firebase.database().ref("messages"),
     notifications: [],
+    typingRef: firebase.database().ref('typing')
   };
 
   componentDidMount() {
@@ -60,8 +63,9 @@ class Channels extends Component {
 
   addNotificationListener = (channelId) => {
     this.state.messagesRef.child(channelId).on("value", (snap) => {
+      // console.log(snap.val())
       if (this.state.channel) {
-        this.handleNotifications(
+        this.handleNotifications( 
           channelId,
           this.state.channel.id,
           this.state.notifications,
@@ -70,7 +74,19 @@ class Channels extends Component {
       }
     });
   };
+   
+  
+  changeChannel = (channel) => {
+    this.state.typingRef.child(channel.id).child(this.state.user.uid).remove()
+    this.setActiveChannel(channel);
+    this.clearNotifications()
+    this.props.setCurrentChannel(channel);
+    this.props.setPrivateChannel(false);
+    this.setState({ channel });
     
+     
+  };
+
   handleNotifications = (channelId, currentChannelId, notifications, snap) => {
 
     let lastTotal = 0;
@@ -107,7 +123,7 @@ class Channels extends Component {
     this.setState({ firstLoad: false });
   };
   setActiveChannel = (channel) => {
-    this.setState({ activeChannel: channel.id, loading: false });
+    this.setState({ activeChannel: channel.id });
   };
 
   addChannel = () => {
@@ -117,7 +133,7 @@ class Channels extends Component {
       email,
       uid,
       photoURL,
-    } = this.props.authenticatedUser;
+    } = this.state.user;
     const key = channelsRef.push().key;
     const newChannel = {
       id: key,
@@ -130,17 +146,19 @@ class Channels extends Component {
         userId: uid,
       },
     };
-    channelsRef
+    this.setState({loading: true}, ()=> (
+      channelsRef
       .child(key)
       .update(newChannel)
       .then(() => {
-        this.setState({ channelName: "", channelDetails: "" });
+        this.setState({ channelName: "", channelDetails: "",loading: false });
         this.closeModal();
         console.log("Channel added");
       })
       .catch((error) => {
         console.error(error);
-      });
+      })
+    ))
   };
 
   getNotificationCount = (channel) => {
@@ -178,13 +196,6 @@ class Channels extends Component {
   isformValid = ({ channelName, channelDetails }) =>
     channelName && channelDetails;
 
-  changeChannel = (channel) => {
-    this.setActiveChannel(channel);
-    this.clearNotifications()
-    this.props.setCurrentChannel(channel);
-    this.props.setPrivateChannel(false);
-    this.setState({ channel });
-  };
 
   clearNotifications = () => {
       let index = this.state.notifications.findIndex(notification=> notification.id === this.state.channel.id)
@@ -198,7 +209,7 @@ class Channels extends Component {
   }
 
   render() {
-    const { modal, channels } = this.state;
+    const { modal, channels,loading } = this.state;
     return (
       <Fragment>
         <Menu.Menu className="animated fadeInDown menu_item2" >
@@ -248,12 +259,19 @@ class Channels extends Component {
                 </Form>
               </Modal.Content>
               <Modal.Actions>
-                <Button inverted color="green" onClick={this.handleSubmit}>
+                {loading ? 
+                 <CircularProgress   size={50} disableShrink />
+                :
+              <Fragment>
+                  <Button inverted color="green" onClick={this.handleSubmit}>
                   <Icon name="checkmark" /> Add
                 </Button>
                 <Button inverted color="red" onClick={this.closeModal}>
                   <Icon name="remove" /> Cancel
                 </Button>
+              </Fragment>
+                
+                }
               </Modal.Actions>
             </Fragment>
           ) : (

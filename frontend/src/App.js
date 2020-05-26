@@ -3,6 +3,8 @@ import LandingPage from './components/landingPage/landingPage'
 import './App.css';
 import {Grid }from "semantic-ui-react"
 import { connect } from "react-redux"
+import Responsive from "react-responsive-decorator"
+
 
 const App =({currentChannel,authenticatedUser,isPrivateChannel,userPost,colors,firstLoad})=> {
     return (
@@ -34,4 +36,4 @@ const mapStateToProps = (state) => ({
   
 })
 
-export default connect(mapStateToProps)(App)
+export default Responsive(connect(mapStateToProps)(App))

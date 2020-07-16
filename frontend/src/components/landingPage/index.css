@@ -123,12 +123,7 @@ button:focus {
 .search {
   cursor: pointer;
 }
-@media (max-width: 600px) {
-  .sidebar {
-    display: none;
-    height: 0;
-  }
-}
+
 .user__typing {
   font-style: italic;
   font-weight: bold;

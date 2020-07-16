@@ -17,7 +17,7 @@ const landingPage = (
 ) => { 
 
     return (
-      <Grid container columns="equal" className="app" style={{background:
+      <Grid container className="app" style={{background:
       
       `${userColors.primaryColor}`}} >
         <ColorPanel
@@ -30,8 +30,8 @@ const landingPage = (
           userColors={userColors}
         />
 
-     <Grid  columns={2} style={{ marginLeft:'8em'}}>
-     <Grid.Column style={{  width: "50em" }}>
+     <Grid  style={{ marginLeft:'8em'}}>
+     <Grid.Column width={12}>
           <Messages
             userColors={userColors}
             key={currentChannel && currentChannel.id}
@@ -41,7 +41,7 @@ const landingPage = (
           />
         </Grid.Column>
 
-        <Grid.Column style={{width: "20em"}}>
+        <Grid.Column width={4}>
           <span>
             <MetaPanel
               key={currentChannel && currentChannel.id}

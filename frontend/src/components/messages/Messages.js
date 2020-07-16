@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { Segment, Comment } from "semantic-ui-react";
+import { Segment, Comment,Image } from "semantic-ui-react";
 import MessagesHeader from "./messageHeader";
 import MessageForm from "./messageForm";
 import firebase from "../../Auth/firebase";
@@ -200,7 +200,8 @@ class Messages extends Component {
       if (snap.key !== this.state.currentUser.uid) {
         typingUsers = typingUsers.concat({
           id: snap.key,
-          name: snap.val()
+          name: snap.val().displayName,
+          avatar: snap.val().photoURL
         });
         this.setState({ typingUsers });
       }
@@ -238,7 +239,7 @@ class Messages extends Component {
       style={{ display: "flex", alignItems: "center", marginBottom: "0.2em" }}
       key={user.id}
     >
-      <span className="user__typing">{user.name} is typing</span> <Typing />
+      <span className="user__typing"> <Image avatar src={user.avatar} /> {user.name} </span> <Typing />
     </div>
   ));
 

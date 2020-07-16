@@ -1,0 +1,628 @@
+openapi: 3.0.0
+info:
+  title: Api Documentation
+  description: Description of how the backend api interacts with our store [shopTitle](shopify_domain.url)
+  version: "3.0"
+  contact:
+    email: developer@mail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://shopify_domain.url/v1
+  - url: http://domain.url
+security:
+  - bearerAuth: []
+paths:
+  /accounts:
+    post:
+      tags:
+        - account
+      summary: Add account details to database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Accounts"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Accounts"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+          links:
+            GetHelplineById:
+              operationId: getAccount
+              parameters:
+                accountId: "$response.body#/account_id"
+
+  /settings:
+    post:
+      tags:
+        - settings
+      summary: Add custom settings for whatsapp chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BasicSettings"
+      responses:
+        "201":
+          description: Conatct added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicSettings"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+  /settings/{accountId}:
+    get:
+      tags:
+        - settings
+      summary: get settings
+      parameters:
+        - in: path
+          name: accountId
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  share:
+                    $ref: "#/components/schemas/Share"
+                  button:
+                    $ref: "#/components/schemas/ChatButton"
+                  greetings:
+                    $ref: "#/components/schemas/Greetings"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+
+  /settings/chat_button:
+    post:
+      tags:
+        - settings
+      summary: Custom settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatButton"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/ChatButton"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+
+  /settings/share:
+    post:
+      tags:
+        - settings
+      summary: Share button
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Share"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Share"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+
+  /settings/greetings:
+    post:
+      tags:
+        - settings
+      summary: Greetings section
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Greetings"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Greetings"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+
+  /settings/callout:
+    post:
+      tags:
+        - settings
+      summary: Callout section
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Callout"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Callout"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+  /helplines:
+    post:
+      tags:
+        - helplines
+      summary: Add Helpline details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Helplines"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Helplines"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+
+          links:
+            GetHelplineById:
+              operationId: getHelpline
+              parameters:
+                helplineId: "$response.body#/helpline_id"
+
+            deleteHelplineById:
+              operationId: deleteHelpline
+              parameters:
+                helplineId: "$response.body#/helpline_id"
+    get:
+      tags:
+        - helplines
+      summary: Gets all available helplines
+      responses:
+        "201":
+          description: A helpline object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Helplines"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+
+    patch:
+      tags:
+        - helplines
+      summary: patch one of the available helplines
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/Helplines"
+      responses:
+        "200":
+          description: Updated
+
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+    put:
+      tags:
+        - helplines
+      summary: put any of the helplines
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: "#/components/schemas/Helplines"
+      responses:
+        "200":
+          description: Updated
+
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+
+  /helplines/{helplineId}:
+    get:
+      tags:
+        - helplines
+      summary: Returns a single helpline
+      operationId: getHelpline
+      parameters:
+        - in: path
+          name: helplineId
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        "201":
+          description: A helpline object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Helplines"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+    delete:
+      tags:
+        - helplines
+      summary: Deletes a single helpline
+      operationId: deleteHelpline
+      parameters:
+        - in: path
+          name: helplineId
+          required: true
+          schema:
+            type: string
+            format: int64
+      responses:
+        "200":
+          description: Delete success
+
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+  /orders:
+    get:
+      tags:
+        - orders
+      summary: Get order details from shop
+
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Orders"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+
+          links:
+            GetHelplineById:
+              operationId: getHelpline
+              parameters:
+                helplineId: "$response.body#/helpline_id"
+
+            deleteHelplineById:
+              operationId: deleteHelpline
+              parameters:
+                helplineId: "$response.body#/helpline_id"
+  /checkouts:
+    get:
+      tags:
+        - abandoned_checkouts
+
+      responses:
+        "200":
+          description: Abandoned cart details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Checkouts"
+        "400":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomError"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Accounts:
+      properties:
+        account_id:
+          type: string
+          example: "567TyebGsjdbhk"
+        shop_id:
+          example: "121323dfdffsf44r4"
+          type: string
+        shopify_domain:
+          example: "https://shop.dom"
+          type: string
+        domain:
+          example: "https://doam.com"
+          type: string
+        country:
+          example: "KEN"
+          type: string
+        language:
+          example: "EN"
+          type: string
+        business_email:
+          example: "busineesaddress@mail.com"
+          type: string
+        phone_number:
+          example: "254 7123 4567"
+          type: string
+        access_token:
+          example: "ezxcvcvcvssfdffsaffdsfdfdfvvcvvvasdsadwwwe"
+          type: string
+    BasicSettings:
+      properties:
+        account_id:
+          type: string
+          example: 567TyebGsjdbhk
+        whatsapp_contacts:
+          type: string
+          example: "254 732 456 789"
+        name:
+          type: string
+          example: user one
+    ChatButton:
+      properties:
+        account_id:
+          type: string
+          example: "567TyebGsjdbhk"
+        button_text:
+          type: string
+          example: Chat with us
+        message_body:
+          type: string
+        color:
+          type: string
+          example: "#fff"
+        position:
+          type: string
+          enum:
+            - left-top
+            - right-top
+            - right-bottom
+            - left-bottom
+    Share:
+      $ref: "#/components/schemas/ChatButton"
+    Greetings:
+      properties:
+        account_id:
+          type: string
+          example: "567TyebGsjdbhk"
+        bar:
+          type: object
+          properties:
+            color:
+              type: string
+              example: "#000"
+            iconColor:
+              type: string
+              example: "#eee"
+        greetings:
+          type: object
+          properties:
+            title:
+              type: string
+              example: hello there
+            subtitle:
+              type: string
+              example: this is a greeting
+        message:
+          type: string
+          example: Close of day message
+
+    Callout:
+      properties:
+        account_id:
+          type: string
+          example: "567TyebGsjdbhk"
+        call_out_text:
+          type: string
+          example: This is a call out text
+        position:
+          type: string
+          enum:
+            - right
+            - left
+
+    Helplines:
+      properties:
+        helpline_id:
+          type: string
+          example: "67Qwerym16378gfn8"
+        name:
+          type: string
+          example: test user
+        whatsapp_numbers:
+          type: array
+          uniqueItems: true
+          example: ["254 712 456 456", "254 712 346 346"]
+        time_in:
+          type: string
+          example: "2020-06-03T19:37:04.654Z"
+        avatar:
+          type: string
+          example: "https://random-image.com"
+        time_out:
+          type: string
+          example: "current time"
+
+    Orders:
+      properties:
+        order_number:
+          type: integer
+          example: 1
+        order_id:
+          type: integer
+          example: 450789469
+        fulfillment_status:
+          type: string
+          example: null
+        total_line_items_price:
+          type: string
+          example: "597.00"
+        line_items:
+          type: array
+          example:
+            [
+              {
+                name: "IPod Nano - 8gb - green",
+                product_id: "466157049",
+                price: "199.00",
+                fulfillment_status: "null",
+                fulfillment_service: manual,
+                product_exists: true,
+                fulfillable_quantity: 1,
+                quantity: 1,
+              },
+            ]
+
+    Checkouts:
+      properties:
+        checkouts:
+          type: array
+          example:
+            [
+              {
+                id: 466157049,
+                token: zs9ru89kuqcdagk8bz4r9hnxt22wwd42,
+                customer: { default_address: { phone: 0712 345 765 678 } },
+                line_items:
+                  [
+                    {
+                      name: "IPod Nano - 8gb - green",
+                      product_id: "466157049",
+                      price: "199.00",
+                      fulfillment_status: "null",
+                      fulfillment_service: manual,
+                      product_exists: true,
+                      fulfillable_quantity: 1,
+                      quantity: 1,
+                    },
+                  ],
+              },
+            ]
+
+    CustomError:
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            name:
+              type: string
+            details:
+              type: object
+              properties:
+                param:
+                  type: string
+                message:
+                  type: string
+                value:
+                  type: string

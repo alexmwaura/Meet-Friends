@@ -112,7 +112,7 @@ class messageForm extends Component {
       .remove()
     }else {
       typingRef.child(channel.id).child(user.uid)
-      .set(user.displayName)
+      .set({displayName: user.displayName,photoURL: user.photoURL})
     }
   }
 

@@ -34,6 +34,7 @@ class directMessages extends Component {
   }
   componentWillMount() {
     this.state.userRef.off()
+    this.state.privateMessagesRef.off()
   }
 
   addListeners = (currentUserUid) => {
@@ -92,9 +93,10 @@ class directMessages extends Component {
 
   addNotificationListener = (channelUserId) => {
     // this.state.privateMessagesRef    
+     
       this.state.privateMessagesRef
-      .child(this.state.user.uid)
-      .child(channelUserId).on("value", snap=> {
+      .child(channelUserId)
+      .child(this.state.user.uid).on("value", snap=> {
         console.log(snap.key)
         this.handleNotifications(
           channelUserId,
@@ -103,9 +105,10 @@ class directMessages extends Component {
           snap
         )
       })
+     
       this.state.privateMessagesRef
-      .child(channelUserId)
-      .child(this.state.user.uid).on("value", snap=> {
+      .child(this.state.user.uid)
+      .child(channelUserId).on("value", snap=> {
         this.handleNotifications(
           channelUserId,
           this.state.user.uid,
@@ -113,6 +116,7 @@ class directMessages extends Component {
           snap
         )
       })
+    
    
 };
 
@@ -230,14 +234,20 @@ class directMessages extends Component {
               ({users.length})
             </Button>
           </Box>
-          <Box display={this.state.display}>
+          
+        </Menu.Item>
+        <Menu.Item style={{ textAlign: "left",position:"fixed",bottom:"1em"}}>
+        <Box display={this.state.display}>
             <Button onClick={this.handleCloseDisplay}>
               <span>
                 <Icon name="exchange" /> CHANNELS 
               </span>{" "}
             </Button>
           </Box>
+          
         </Menu.Item>
+
+
         {users.map((user) => (
           <Box display={this.state.display}
           style={{ opacity: 0.8, fontStyle: "italic", textAlign: "left" }}

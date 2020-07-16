@@ -30,11 +30,7 @@ class messageHeader extends Component {
             />) }
           </span>
           <Header.Subheader>
-            {parseInt(numUniqueUsers.substring(0,1)) > 0 ? (
-              numUniqueUsers
-            ) : (
-              <CircularProgress size={10} disableShrink />
-            )}
+            {!privateChannel && numUniqueUsers }
           </Header.Subheader>
         </Header>
         <Header floated="right">

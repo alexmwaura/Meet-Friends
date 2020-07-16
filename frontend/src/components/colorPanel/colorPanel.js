@@ -3,7 +3,7 @@ import firebase from "../../Auth/firebase";
 import { connect } from "react-redux";
 import { setColors } from "../../redux/actions/actions";
 // prettier-ignore
-import { Sidebar, Menu, Divider, Button, Modal, Icon, Label, Segment } from "semantic-ui-react";
+import { Sidebar, Divider, Button, Modal, Icon, Label, Segment } from "semantic-ui-react";
 import { SliderPicker } from "react-color";
 import CircularProgress from "@material-ui/core/CircularProgress";
 

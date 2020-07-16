@@ -1,6 +1,5 @@
 html,
 body {
-  margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
@@ -10,15 +9,6 @@ body {
   --thumbBG2: #044238;
   --thumbBG: #b1d6ee;
   background: #eee;
-  padding: 1em;
-  /* height: 50vh; */
-}
-.app {
-  /* margin: 0; */
-  height: 58vh;
-  /* position: fixed; */
-  /* float: left; */
-  padding: 1em;
 }
 
 .pulse {
@@ -46,7 +36,7 @@ html::-webkit-scrollbar-corner {
   background-color: var(--scrollbarBG);
 }
 
-menu_item_direct {
+.menu_item_direct {
   text-align: center;
 }
 .color__container {
@@ -74,7 +64,10 @@ menu_item_direct {
 }
 .messages {
   height: 58vh;
-  overflow-y: auto;
+  overflow-y: scroll;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px !important;
   /* direction: ltr; */
   scrollbar-width: thin;
   scrollbar-color: var(--thumbBG2) var(--scrollbarBG);
@@ -137,3 +130,26 @@ menu_item_direct {
   height: 100vh;
   overflow-y:auto ;
 } */
+.main-content {
+  margin-top: 40px;
+  align-items: center;
+  justify-content: center;
+  display: table;
+
+}
+
+@media (min-width: 768px) {
+  .ui.vertical.menu.sidebar-menu {
+    visibility: visible;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    width: 15rem !important;
+  }
+  .main-content {
+    margin-left: 15rem;
+    width: 100%;
+  }
+  .sidebar-menu-toggler {
+    display: none !important;
+  }
+}

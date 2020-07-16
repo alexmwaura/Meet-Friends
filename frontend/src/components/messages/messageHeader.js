@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Header, Segment, Input, Icon,Image } from "semantic-ui-react";
-import { CircularProgress } from "@material-ui/core";
 
 class messageHeader extends Component {
   render() {

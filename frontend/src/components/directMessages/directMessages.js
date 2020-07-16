@@ -5,7 +5,7 @@ import firebase from "../../Auth/firebase";
 import {
   setCurrentChannel,
   setPrivateChannel,
-  firstLoad
+  firstLoad,
 } from "../../redux/actions/actions";
 import { connect } from "react-redux";
 
@@ -28,13 +28,12 @@ class directMessages extends Component {
   componentDidMount() {
     if (this.state.user) {
       this.addListeners(this.state.user.uid);
-      
     }
     // console.log(this.state.connectedRef)
   }
   componentWillMount() {
-    this.state.userRef.off()
-    this.state.privateMessagesRef.off()
+    this.state.userRef.off();
+    this.state.privateMessagesRef.off();
   }
 
   addListeners = (currentUserUid) => {
@@ -50,7 +49,6 @@ class directMessages extends Component {
       }
 
       this.setState({ users: loadedUsers }, () => this.setFirstUser());
-      
     });
     // console.log(loadedUsers)
     connectedRef.on("value", (snap) => {
@@ -92,59 +90,57 @@ class directMessages extends Component {
   };
 
   addNotificationListener = (channelUserId) => {
-    // this.state.privateMessagesRef    
-     
-      this.state.privateMessagesRef
-      .child(channelUserId)
-      .child(this.state.user.uid).on("value", snap=> {
-        console.log(snap.key)
-        this.handleNotifications(
-          channelUserId,
-          this.state.user.uid,
-          this.state.notifications,
-          snap
-        )
-      })
-     
-      this.state.privateMessagesRef
-      .child(this.state.user.uid)
-      .child(channelUserId).on("value", snap=> {
-        this.handleNotifications(
-          channelUserId,
-          this.state.user.uid,
-          this.state.notifications,
-          snap
-        )
-      })
-    
-   
-};
+    // this.state.privateMessagesRef
 
-  handleNotifications = (currentUserChannelId,userId,notifications,snap) => {
+    this.state.privateMessagesRef
+      .child(channelUserId)
+      .child(this.state.user.uid)
+      .on("value", (snap) => {
+        console.log(snap.key);
+        this.handleNotifications(
+          channelUserId,
+          this.state.user.uid,
+          this.state.notifications,
+          snap
+        );
+      });
+
+    this.state.privateMessagesRef
+      .child(this.state.user.uid)
+      .child(channelUserId)
+      .on("value", (snap) => {
+        this.handleNotifications(
+          channelUserId,
+          this.state.user.uid,
+          this.state.notifications,
+          snap
+        );
+      });
+  };
+
+  handleNotifications = (currentUserChannelId, userId, notifications, snap) => {
     let lastTotal = 0;
     let index = notifications.findIndex(
       (notification) => notification.id === currentUserChannelId
     );
-    if(index !== -1){
-      if(currentUserChannelId !== userId){
-        lastTotal = notifications[index].total
+    if (index !== -1) {
+      if (currentUserChannelId !== userId) {
+        lastTotal = notifications[index].total;
 
-        if(snap.numChildren() - lastTotal > 0){
-          notifications[index].count = snap.numChildren() - lastTotal
+        if (snap.numChildren() - lastTotal > 0) {
+          notifications[index].count = snap.numChildren() - lastTotal;
         }
       }
-      notifications[index].lastKnownTotal = snap.numChildren()
-    }
-    else {
+      notifications[index].lastKnownTotal = snap.numChildren();
+    } else {
       notifications.push({
         id: currentUserChannelId,
         total: snap.numChildren(),
         lastKnownTotal: snap.numChildren(),
-        count: 0
-      })
-    }  
-    this.setState({notifications})
- 
+        count: 0,
+      });
+    }
+    this.setState({ notifications });
   };
 
   addStatusToUser = (userId, connected = true) => {
@@ -176,7 +172,7 @@ class directMessages extends Component {
 
     this.props.setCurrentChannel(channelData);
     this.props.setPrivateChannel(true);
-    this.props.firstLoad()
+    this.props.firstLoad();
     this.setActiveChannel(user);
     this.setState({ userMessage: user });
     this.clearNotifications();
@@ -185,11 +181,14 @@ class directMessages extends Component {
   getNotificationCount = (user) => {
     let count = 0;
     this.state.notifications.forEach((notification) => {
-      if (notification.id === user.userId && notification.id !== this.state.userMessage.uid) {
+      if (
+        notification.id === user.userId &&
+        notification.id !== this.state.userMessage.uid
+      ) {
         count = notification.count;
       }
-    })
-    if (count > 0) return count
+    });
+    if (count > 0) return count;
   };
 
   clearNotifications = () => {
@@ -219,7 +218,7 @@ class directMessages extends Component {
     );
   };
   render() {
-    const { users, activeChannel } = this.state;
+    const { users, activeChannel, userMessage } = this.state;
 
     return (
       <Menu.Menu className="menu_item_direct">
@@ -228,36 +227,35 @@ class directMessages extends Component {
             <Button onClick={this.handleDisplay}>
               <span>
                 <Icon name="mail" />
-                DIRECT <br/>
+                DIRECT <br />
                 MESSAGES
               </span>{" "}
               ({users.length})
             </Button>
           </Box>
-          
         </Menu.Item>
-        <Menu.Item style={{ textAlign: "left",position:"fixed",bottom:"1em"}}>
-        <Box display={this.state.display}>
+        <Menu.Item
+          style={{ textAlign: "left"}}
+        >
+          <Box display={this.state.display}>
             <Button onClick={this.handleCloseDisplay}>
               <span>
-                <Icon name="exchange" /> CHANNELS 
+                <Icon name="exchange" /> CHANNELS
               </span>{" "}
             </Button>
           </Box>
-          
         </Menu.Item>
 
-
         {users.map((user) => (
-          <Box display={this.state.display}
-          style={{ opacity: 0.8, fontStyle: "italic", textAlign: "left" }}
-          key={user.userId}
+          <Box
+            display={this.state.display}
+            style={{ opacity: 0.8, fontStyle: "italic", textAlign: "left" }}
+            key={user.userId}
           >
             <Menu.Item
               className="animated fadeInUp"
               active={user.userId === activeChannel}
               onClick={() => this.changeChannel(user)}
-             
             >
               <Icon
                 name="circle"
@@ -267,7 +265,7 @@ class directMessages extends Component {
                 {" "}
                 <Image src={user.profileImage} spaced="right" avatar />
               </span>
-              {this.getNotificationCount(user) && (
+              {userMessage && this.getNotificationCount(user) && (
                 <Label color="red">{this.getNotificationCount(user)}</Label>
               )}
               {user.username.toLowerCase()}
@@ -279,6 +277,8 @@ class directMessages extends Component {
   }
 }
 
-export default connect(null, { setCurrentChannel, setPrivateChannel,firstLoad })(
-  directMessages
-);
+export default connect(null, {
+  setCurrentChannel,
+  setPrivateChannel,
+  firstLoad,
+})(directMessages);

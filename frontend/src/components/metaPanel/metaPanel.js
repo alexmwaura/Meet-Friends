@@ -5,7 +5,6 @@ import {
   Header,
   Icon,
   Image,
-  Button,
   List,
 } from "semantic-ui-react";
 import CircularProgress from "@material-ui/core/CircularProgress";

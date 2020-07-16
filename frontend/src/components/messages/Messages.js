@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { Segment, Comment,Image } from "semantic-ui-react";
 import MessagesHeader from "./messageHeader";
 import MessageForm from "./messageForm";

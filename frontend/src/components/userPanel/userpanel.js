@@ -207,7 +207,7 @@ class userpanel extends Component {
                 onChange={this.handleChange}
                 fluid
                 icon="user"
-                iconPosition="right"
+                // iconPosition="right"
                 type="file"
                 label="New Avatar"
                 name="previewImage"

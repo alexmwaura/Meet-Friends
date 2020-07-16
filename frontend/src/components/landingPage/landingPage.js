@@ -31,7 +31,7 @@ const landingPage = (
         />
 
      <Grid  style={{ marginLeft:'8em'}}>
-     <Grid.Column width={12}>
+     <Grid.Column mobile={16} largeScreen={12} widescreen={12}>
           <Messages
             userColors={userColors}
             key={currentChannel && currentChannel.id}
@@ -41,7 +41,7 @@ const landingPage = (
           />
         </Grid.Column>
 
-        <Grid.Column width={4}>
+        <Grid.Column mobile={16} largeScreen={4} widescreen={4}>
           <span>
             <MetaPanel
               key={currentChannel && currentChannel.id}
